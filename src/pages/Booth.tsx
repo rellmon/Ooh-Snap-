@@ -1,36 +1,74 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ArrowLeft, Camera, CameraOff, Timer } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ArrowLeft, Camera, CameraOff, RotateCcw, Timer } from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
 import Button from '../components/ui/Button'
 import { useCamera } from '../hooks/useCamera'
 import { useCountdown } from '../hooks/useCountdown'
 import { capturePhoto } from '../utils/capturePhoto'
 
+// Later, the selected layout will decide this number.
+const TOTAL_PHOTOS = 4
+const PAUSE_BETWEEN_PHOTOS_MS = 1000
+
 function Booth() {
   const { videoRef, status, error, start, stop } = useCamera()
-  const [photo, setPhoto] = useState<string | null>(null)
+  const [photos, setPhotos] = useState<string[]>([])
+  const [isRunning, setIsRunning] = useState(false)
   const [captureError, setCaptureError] = useState<string | null>(null)
+
+  const isComplete = photos.length >= TOTAL_PHOTOS
+  const isSessionActive = isRunning && !isComplete
 
   const handleSnap = useCallback(async () => {
     if (!videoRef.current) return
 
     try {
       const url = await capturePhoto(videoRef.current)
-      setPhoto(url)
-      setCaptureError(null)
+      setPhotos((current) => [...current, url])
     } catch {
       setCaptureError("We couldn't take that photo. Please try again.")
+      setIsRunning(false)
     }
   }, [videoRef])
 
   const { count, start: startCountdown, cancel } = useCountdown(3, handleSnap)
-  const isCounting = count !== null
 
-  // Free the memory of the previous photo when it is replaced or the page closes.
+  // While a session is running, wait a moment and start the next countdown.
   useEffect(() => {
-    if (!photo) return
-    return () => URL.revokeObjectURL(photo)
-  }, [photo])
+    if (!isSessionActive || count !== null) return
+
+    const timer = setTimeout(startCountdown, PAUSE_BETWEEN_PHOTOS_MS)
+    return () => clearTimeout(timer)
+  }, [isSessionActive, count, startCountdown])
+
+  // Keep a copy of the latest photos so we can free their memory on exit.
+  const photosRef = useRef<string[]>([])
+  useEffect(() => {
+    photosRef.current = photos
+  }, [photos])
+
+  useEffect(() => {
+    return () => photosRef.current.forEach((url) => URL.revokeObjectURL(url))
+  }, [])
+
+  function handleStart() {
+    setCaptureError(null)
+    setIsRunning(true)
+    startCountdown()
+  }
+
+  function handleCancel() {
+    cancel()
+    setIsRunning(false)
+  }
+
+  function handleStartOver() {
+    cancel()
+    photos.forEach((url) => URL.revokeObjectURL(url))
+    setPhotos([])
+    setCaptureError(null)
+    setIsRunning(false)
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
@@ -92,23 +130,45 @@ function Booth() {
       </section>
 
       {status === 'active' && (
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          {isCounting ? (
-            <Button variant="secondary" onClick={cancel}>
-              Cancel
-            </Button>
-          ) : (
-            <>
-              <Button size="lg" onClick={startCountdown}>
-                <Timer size={20} aria-hidden="true" />
-                {photo ? 'Take another' : 'Start countdown'}
+        <div className="mt-6 text-center">
+          <p aria-live="polite" className="mb-4 text-lg font-semibold">
+            {isComplete
+              ? `All ${TOTAL_PHOTOS} photos taken!`
+              : isSessionActive
+                ? `Photo ${photos.length + 1} of ${TOTAL_PHOTOS}`
+                : `${photos.length} of ${TOTAL_PHOTOS} photos taken`}
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-3">
+            {isSessionActive ? (
+              <Button variant="secondary" onClick={handleCancel}>
+                Cancel
               </Button>
-              <Button variant="secondary" size="lg" onClick={stop}>
-                <CameraOff size={18} aria-hidden="true" />
-                Turn off camera
-              </Button>
-            </>
-          )}
+            ) : (
+              <>
+                {!isComplete && (
+                  <Button size="lg" onClick={handleStart}>
+                    <Timer size={20} aria-hidden="true" />
+                    {photos.length === 0 ? 'Start session' : 'Continue'}
+                  </Button>
+                )}
+                {photos.length > 0 && (
+                  <Button
+                    variant={isComplete ? 'primary' : 'secondary'}
+                    size="lg"
+                    onClick={handleStartOver}
+                  >
+                    <RotateCcw size={18} aria-hidden="true" />
+                    Start over
+                  </Button>
+                )}
+                <Button variant="secondary" size="lg" onClick={stop}>
+                  <CameraOff size={18} aria-hidden="true" />
+                  Turn off camera
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -118,18 +178,34 @@ function Booth() {
         </p>
       )}
 
-      {photo && (
-        <section aria-labelledby="latest-shot" className="mt-10 text-center">
-          <h2 id="latest-shot" className="text-2xl font-bold">
-            Your shot
-          </h2>
-          <img
-            src={photo}
-            alt="The photo you just took"
-            className="mx-auto mt-4 w-full max-w-md rounded-2xl shadow-xl ring-1 ring-black/5"
-          />
-        </section>
-      )}
+      <section aria-labelledby="your-shots" className="mt-10">
+        <h2 id="your-shots" className="text-center text-2xl font-bold">
+          Your shots
+        </h2>
+        <ol className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {Array.from({ length: TOTAL_PHOTOS }, (_, index) => {
+            const photo = photos[index]
+            return (
+              <li
+                key={index}
+                className="aspect-video overflow-hidden rounded-xl bg-white ring-1 ring-black/5"
+              >
+                {photo ? (
+                  <img
+                    src={photo}
+                    alt={`Photo ${index + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center border-2 border-dashed border-brand-200 text-xl font-bold text-brand-300">
+                    {index + 1}
+                  </div>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      </section>
     </div>
   )
 }
