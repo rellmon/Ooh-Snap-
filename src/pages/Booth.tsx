@@ -1,9 +1,13 @@
-import { ArrowLeft, Camera, CameraOff } from 'lucide-react'
+import { ArrowLeft, Camera, CameraOff, Timer } from 'lucide-react'
+import Countdown from '../components/camera/Countdown'
 import Button from '../components/ui/Button'
 import { useCamera } from '../hooks/useCamera'
+import { useCountdown } from '../hooks/useCountdown'
 
 function Booth() {
   const { videoRef, status, error, start, stop } = useCamera()
+  const { count, start: startCountdown, cancel } = useCountdown(3)
+  const isCounting = count !== null
 
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
@@ -60,14 +64,28 @@ function Booth() {
             )}
           </div>
         )}
+
+        <Countdown count={count} />
       </section>
 
       {status === 'active' && (
-        <div className="mt-6 flex justify-center">
-          <Button variant="secondary" onClick={stop}>
-            <CameraOff size={18} aria-hidden="true" />
-            Turn off camera
-          </Button>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          {isCounting ? (
+            <Button variant="secondary" onClick={cancel}>
+              Cancel
+            </Button>
+          ) : (
+            <>
+              <Button size="lg" onClick={startCountdown}>
+                <Timer size={20} aria-hidden="true" />
+                Start countdown
+              </Button>
+              <Button variant="secondary" size="lg" onClick={stop}>
+                <CameraOff size={18} aria-hidden="true" />
+                Turn off camera
+              </Button>
+            </>
+          )}
         </div>
       )}
     </div>
