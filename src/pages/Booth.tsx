@@ -1,9 +1,9 @@
-import { ArrowLeft, Camera } from 'lucide-react'
+import { ArrowLeft, Camera, CameraOff } from 'lucide-react'
 import Button from '../components/ui/Button'
 import { useCamera } from '../hooks/useCamera'
 
 function Booth() {
-  const { videoRef, status, error, start } = useCamera()
+  const { videoRef, status, error, start, stop } = useCamera()
 
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
@@ -61,6 +61,15 @@ function Booth() {
           </div>
         )}
       </section>
+
+      {status === 'active' && (
+        <div className="mt-6 flex justify-center">
+          <Button variant="secondary" onClick={stop}>
+            <CameraOff size={18} aria-hidden="true" />
+            Turn off camera
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
