@@ -1,7 +1,9 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Camera, Download, Sparkles } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
+import { useSession } from '../hooks/useSession'
 
 const steps = [
   {
@@ -29,6 +31,13 @@ const stripFrames = [
 ]
 
 function Home() {
+  const { clearPhotos } = useSession()
+
+  // Visiting the home page ends the old session, so a new one starts clean.
+  useEffect(() => {
+    clearPhotos()
+  }, [clearPhotos])
+
   return (
     <div className="mx-auto max-w-5xl px-6 pb-20">
       <section className="grid items-center gap-12 py-12 md:grid-cols-2 md:py-20">

@@ -1,9 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowLeft, Camera, CameraOff, RotateCcw, Timer } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Camera,
+  CameraOff,
+  RotateCcw,
+  Timer,
+} from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
 import Button from '../components/ui/Button'
 import { useCamera } from '../hooks/useCamera'
 import { useCountdown } from '../hooks/useCountdown'
+import { useSession } from '../hooks/useSession'
 import { capturePhoto } from '../utils/capturePhoto'
 
 // Later, the selected layout will decide this number.
@@ -12,16 +20,10 @@ const PAUSE_BETWEEN_PHOTOS_MS = 1000
 
 function Booth() {
   const { videoRef, status, error, start, stop } = useCamera()
-  const [photos, setPhotos] = useState<string[]>([])
+  const { photos, addPhoto, replacePhoto, clearPhotos } = useSession()
   const [isRunning, setIsRunning] = useState(false)
   const [retakeIndex, setRetakeIndex] = useState<number | null>(null)
   const [captureError, setCaptureError] = useState<string | null>(null)
-
-  // Keep a copy of the latest photos so we can free their memory.
-  const photosRef = useRef<string[]>([])
-  useEffect(() => {
-    photosRef.current = photos
-  }, [photos])
 
   const isComplete = photos.length >= TOTAL_PHOTOS
   const isSessionActive = isRunning && !isComplete
@@ -35,21 +37,17 @@ function Booth() {
       const url = await capturePhoto(videoRef.current)
 
       if (retakeIndex !== null) {
-        const oldUrl = photosRef.current[retakeIndex]
-        setPhotos((current) =>
-          current.map((photo, index) => (index === retakeIndex ? url : photo)),
-        )
-        if (oldUrl) URL.revokeObjectURL(oldUrl)
+        replacePhoto(retakeIndex, url)
         setRetakeIndex(null)
       } else {
-        setPhotos((current) => [...current, url])
+        addPhoto(url)
       }
     } catch {
       setCaptureError("We couldn't take that photo. Please try again.")
       setIsRunning(false)
       setRetakeIndex(null)
     }
-  }, [videoRef, retakeIndex])
+  }, [videoRef, retakeIndex, addPhoto, replacePhoto])
 
   const { count, start: startCountdown, cancel } = useCountdown(3, handleSnap)
 
@@ -60,11 +58,6 @@ function Booth() {
     const timer = setTimeout(startCountdown, PAUSE_BETWEEN_PHOTOS_MS)
     return () => clearTimeout(timer)
   }, [isSessionActive, count, startCountdown])
-
-  // Free the memory of every photo when the page closes.
-  useEffect(() => {
-    return () => photosRef.current.forEach((url) => URL.revokeObjectURL(url))
-  }, [])
 
   function handleStart() {
     setCaptureError(null)
@@ -86,8 +79,7 @@ function Booth() {
 
   function handleStartOver() {
     cancel()
-    photos.forEach((url) => URL.revokeObjectURL(url))
-    setPhotos([])
+    clearPhotos()
     setCaptureError(null)
     setIsRunning(false)
     setRetakeIndex(null)
@@ -178,11 +170,7 @@ function Booth() {
                   </Button>
                 )}
                 {photos.length > 0 && (
-                  <Button
-                    variant={isComplete ? 'primary' : 'secondary'}
-                    size="lg"
-                    onClick={handleStartOver}
-                  >
+                  <Button variant="secondary" size="lg" onClick={handleStartOver}>
                     <RotateCcw size={18} aria-hidden="true" />
                     Start over
                   </Button>
@@ -194,6 +182,15 @@ function Booth() {
               </>
             )}
           </div>
+        </div>
+      )}
+
+      {isComplete && !isBusy && (
+        <div className="mt-4 flex justify-center">
+          <Button to="/review" size="lg">
+            See your photos
+            <ArrowRight size={20} aria-hidden="true" />
+          </Button>
         </div>
       )}
 
