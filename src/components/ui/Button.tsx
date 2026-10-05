@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 type Variant = 'primary' | 'secondary'
-type Size = 'md' | 'lg'
+type Size = 'sm' | 'md' | 'lg'
 
 type ButtonProps = {
   variant?: Variant
@@ -21,6 +21,7 @@ const variantStyles: Record<Variant, string> = {
 }
 
 const sizeStyles: Record<Size, string> = {
+  sm: 'px-3 py-1.5 text-sm',
   md: 'px-6 py-3',
   lg: 'px-8 py-4 text-lg',
 }

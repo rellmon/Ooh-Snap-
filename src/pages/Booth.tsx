@@ -14,22 +14,42 @@ function Booth() {
   const { videoRef, status, error, start, stop } = useCamera()
   const [photos, setPhotos] = useState<string[]>([])
   const [isRunning, setIsRunning] = useState(false)
+  const [retakeIndex, setRetakeIndex] = useState<number | null>(null)
   const [captureError, setCaptureError] = useState<string | null>(null)
+
+  // Keep a copy of the latest photos so we can free their memory.
+  const photosRef = useRef<string[]>([])
+  useEffect(() => {
+    photosRef.current = photos
+  }, [photos])
 
   const isComplete = photos.length >= TOTAL_PHOTOS
   const isSessionActive = isRunning && !isComplete
+  const isRetaking = retakeIndex !== null
+  const isBusy = isSessionActive || isRetaking
 
   const handleSnap = useCallback(async () => {
     if (!videoRef.current) return
 
     try {
       const url = await capturePhoto(videoRef.current)
-      setPhotos((current) => [...current, url])
+
+      if (retakeIndex !== null) {
+        const oldUrl = photosRef.current[retakeIndex]
+        setPhotos((current) =>
+          current.map((photo, index) => (index === retakeIndex ? url : photo)),
+        )
+        if (oldUrl) URL.revokeObjectURL(oldUrl)
+        setRetakeIndex(null)
+      } else {
+        setPhotos((current) => [...current, url])
+      }
     } catch {
       setCaptureError("We couldn't take that photo. Please try again.")
       setIsRunning(false)
+      setRetakeIndex(null)
     }
-  }, [videoRef])
+  }, [videoRef, retakeIndex])
 
   const { count, start: startCountdown, cancel } = useCountdown(3, handleSnap)
 
@@ -41,12 +61,7 @@ function Booth() {
     return () => clearTimeout(timer)
   }, [isSessionActive, count, startCountdown])
 
-  // Keep a copy of the latest photos so we can free their memory on exit.
-  const photosRef = useRef<string[]>([])
-  useEffect(() => {
-    photosRef.current = photos
-  }, [photos])
-
+  // Free the memory of every photo when the page closes.
   useEffect(() => {
     return () => photosRef.current.forEach((url) => URL.revokeObjectURL(url))
   }, [])
@@ -57,9 +72,16 @@ function Booth() {
     startCountdown()
   }
 
+  function handleRetake(index: number) {
+    setCaptureError(null)
+    setRetakeIndex(index)
+    startCountdown()
+  }
+
   function handleCancel() {
     cancel()
     setIsRunning(false)
+    setRetakeIndex(null)
   }
 
   function handleStartOver() {
@@ -68,6 +90,7 @@ function Booth() {
     setPhotos([])
     setCaptureError(null)
     setIsRunning(false)
+    setRetakeIndex(null)
   }
 
   return (
@@ -132,15 +155,17 @@ function Booth() {
       {status === 'active' && (
         <div className="mt-6 text-center">
           <p aria-live="polite" className="mb-4 text-lg font-semibold">
-            {isComplete
-              ? `All ${TOTAL_PHOTOS} photos taken!`
-              : isSessionActive
-                ? `Photo ${photos.length + 1} of ${TOTAL_PHOTOS}`
-                : `${photos.length} of ${TOTAL_PHOTOS} photos taken`}
+            {isRetaking
+              ? `Retaking photo ${retakeIndex + 1}`
+              : isComplete
+                ? `All ${TOTAL_PHOTOS} photos taken!`
+                : isSessionActive
+                  ? `Photo ${photos.length + 1} of ${TOTAL_PHOTOS}`
+                  : `${photos.length} of ${TOTAL_PHOTOS} photos taken`}
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">
-            {isSessionActive ? (
+            {isBusy ? (
               <Button variant="secondary" onClick={handleCancel}>
                 Cancel
               </Button>
@@ -188,14 +213,28 @@ function Booth() {
             return (
               <li
                 key={index}
-                className="aspect-video overflow-hidden rounded-xl bg-white ring-1 ring-black/5"
+                className="relative aspect-video overflow-hidden rounded-xl bg-white ring-1 ring-black/5"
               >
                 {photo ? (
-                  <img
-                    src={photo}
-                    alt={`Photo ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
+                  <>
+                    <img
+                      src={photo}
+                      alt={`Photo ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                    {status === 'active' && !isBusy && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="absolute bottom-2 right-2"
+                        aria-label={`Retake photo ${index + 1}`}
+                        onClick={() => handleRetake(index)}
+                      >
+                        <RotateCcw size={14} aria-hidden="true" />
+                        Retake
+                      </Button>
+                    )}
+                  </>
                 ) : (
                   <div className="flex h-full items-center justify-center border-2 border-dashed border-brand-200 text-xl font-bold text-brand-300">
                     {index + 1}
