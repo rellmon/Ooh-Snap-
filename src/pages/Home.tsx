@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Camera, Download, Sparkles } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
 
 const steps = [
   {
@@ -67,13 +68,10 @@ function Home() {
             className="mt-8 inline-block"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to="/booth"
-                className="inline-flex items-center gap-2 rounded-full bg-pink-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-pink-600/30 hover:bg-pink-700 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pink-600"
-              >
+              <Button to="/booth" size="lg">
                 Start the booth
                 <ArrowRight size={20} aria-hidden="true" />
-              </Link>
+              </Button>
             </motion.div>
           </motion.div>
         </div>
@@ -111,17 +109,16 @@ function Home() {
 
         <ol className="mt-10 grid gap-6 sm:grid-cols-3">
           {steps.map(({ icon: Icon, title, text }, index) => (
-            <li
-              key={title}
-              className="rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5"
-            >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-pink-600">
-                <Icon size={24} aria-hidden="true" />
-              </div>
-              <h3 className="mt-4 text-lg font-bold">
-                {index + 1}. {title}
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">{text}</p>
+            <li key={title}>
+              <Card className="h-full text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-pink-600">
+                  <Icon size={24} aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-lg font-bold">
+                  {index + 1}. {title}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">{text}</p>
+              </Card>
             </li>
           ))}
         </ol>
