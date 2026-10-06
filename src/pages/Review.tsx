@@ -1,9 +1,10 @@
 import { Camera, RotateCcw } from 'lucide-react'
+import PhotoSheet from '../components/camera/PhotoSheet'
 import Button from '../components/ui/Button'
 import { useSession } from '../hooks/useSession'
 
 function Review() {
-  const { photos, clearPhotos } = useSession()
+  const { layout, photos, clearPhotos } = useSession()
 
   if (photos.length === 0) {
     return (
@@ -26,23 +27,12 @@ function Review() {
         How did we do?
       </h1>
       <p className="mt-2 text-center text-slate-600">
-        Check your shots. Not happy with one? Go back and retake it.
+        Your {layout.name}. Not happy with a shot? Go back and retake it.
       </p>
 
-      <ol className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {photos.map((photo, index) => (
-          <li
-            key={photo}
-            className="overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-black/5"
-          >
-            <img
-              src={photo}
-              alt={`Photo ${index + 1}`}
-              className="aspect-video w-full object-cover"
-            />
-          </li>
-        ))}
-      </ol>
+      <div className="mt-8">
+        <PhotoSheet layout={layout} photos={photos} />
+      </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button to="/booth" size="lg">
