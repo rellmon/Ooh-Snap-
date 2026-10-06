@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import type { AdjustmentKey, Adjustments } from '../types/adjustments'
+import type { TextCaption } from '../types/caption'
 import type { FilterId, PhotoFilter } from '../types/filter'
 import type { FrameId, PhotoFrame } from '../types/frame'
 import type { LayoutId, PhotoLayout } from '../types/layout'
@@ -15,6 +16,9 @@ export type SessionContextValue = {
   resetAdjustments: () => void
   frame: PhotoFrame
   selectFrame: (id: FrameId) => void
+  caption: TextCaption
+  // Changes only the fields you pass, like { color: '#fff' }.
+  updateCaption: (changes: Partial<TextCaption>) => void
   stickers: PlacedSticker[]
   // Returns the new sticker's id, so the page can select it right away.
   addSticker: (emoji: string) => string

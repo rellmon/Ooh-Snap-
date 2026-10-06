@@ -3,6 +3,7 @@ import { Camera, RotateCcw } from 'lucide-react'
 import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
 import AdjustmentSliders from '../components/editor/AdjustmentSliders'
+import CaptionEditor from '../components/editor/CaptionEditor'
 import FilterPicker from '../components/editor/FilterPicker'
 import FramePicker from '../components/editor/FramePicker'
 import StickerPicker from '../components/editor/StickerPicker'
@@ -25,6 +26,8 @@ function Review() {
     resetAdjustments,
     frame,
     selectFrame,
+    caption,
+    updateCaption,
     stickers,
     addSticker,
     removeSticker,
@@ -43,9 +46,10 @@ function Review() {
 
   // The cheap CSS preview uses these right away...
   const filterCss = buildFilterCss(filter, adjustments)
-  // ...while the heavy canvas redraw waits until dragging or sliding stops.
+  // ...while the heavy canvas redraw waits until typing, dragging or sliding stops.
   const finalFilterCss = useDebouncedValue(filterCss, 250)
   const finalStickers = useDebouncedValue(stickers, 250)
+  const finalCaption = useDebouncedValue(caption, 250)
 
   if (photos.length === 0) {
     return (
@@ -97,6 +101,10 @@ function Review() {
       </div>
 
       <div className="mt-6">
+        <CaptionEditor caption={caption} onChange={updateCaption} />
+      </div>
+
+      <div className="mt-6">
         <StickerPicker
           options={stickerOptions}
           placed={stickers}
@@ -115,6 +123,7 @@ function Review() {
           photos={photos}
           filterCss={filterCss}
           frame={frame}
+          caption={caption}
           stickers={stickers}
           selectedUid={selectedSticker?.uid ?? null}
           onSelectSticker={setSelectedUid}
@@ -142,6 +151,7 @@ function Review() {
           filterCss={finalFilterCss}
           frame={frame}
           stickers={finalStickers}
+          caption={finalCaption}
         />
       </section>
 

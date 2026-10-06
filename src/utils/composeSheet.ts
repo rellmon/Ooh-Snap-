@@ -1,3 +1,4 @@
+import type { TextCaption } from '../types/caption'
 import type { PhotoFrame } from '../types/frame'
 import type { PhotoLayout } from '../types/layout'
 import type { PlacedSticker } from '../types/sticker'
@@ -59,6 +60,7 @@ export async function composeSheet(
   filterCss: string,
   frame: PhotoFrame,
   stickers: PlacedSticker[],
+  caption: TextCaption,
 ): Promise<HTMLCanvasElement> {
   const images = await Promise.all(
     photos.slice(0, layout.photoCount).map(loadImage),
@@ -110,6 +112,19 @@ export async function composeSheet(
     canvas.width / 2,
     sheet.height - FOOTER_HEIGHT / 2,
   )
+
+  // The caption goes above the photos and footer, but below the stickers.
+  if (caption.content.trim() !== '') {
+    context.fillStyle = caption.color
+    context.font = `700 ${caption.size * sheet.width}px Fredoka, system-ui, sans-serif`
+    context.textAlign = 'center'
+    context.textBaseline = 'middle'
+    context.fillText(
+      caption.content,
+      caption.x * sheet.width,
+      caption.y * sheet.height,
+    )
+  }
 
   // Stickers go last, so they sit on top of everything else.
   for (const sticker of stickers) {

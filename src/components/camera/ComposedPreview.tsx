@@ -7,6 +7,7 @@ import {
   downloadCanvas,
   type ExportFormat,
 } from '../../utils/exportImage'
+import type { TextCaption } from '../../types/caption'
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
 import type { PlacedSticker } from '../../types/sticker'
@@ -17,6 +18,7 @@ type ComposedPreviewProps = {
   filterCss: string
   frame: PhotoFrame
   stickers: PlacedSticker[]
+  caption: TextCaption
 }
 
 function ComposedPreview({
@@ -25,6 +27,7 @@ function ComposedPreview({
   filterCss,
   frame,
   stickers,
+  caption,
 }: ComposedPreviewProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
@@ -35,7 +38,7 @@ function ComposedPreview({
     let isCancelled = false
     let createdUrl: string | null = null
 
-    composeSheet(layout, photos, filterCss, frame, stickers)
+    composeSheet(layout, photos, filterCss, frame, stickers, caption)
       .then(async (composed) => {
         const blob = await canvasToBlob(composed, 'image/png')
         if (isCancelled) return
@@ -51,7 +54,7 @@ function ComposedPreview({
       isCancelled = true
       if (createdUrl) URL.revokeObjectURL(createdUrl)
     }
-  }, [layout, photos, filterCss, frame, stickers])
+  }, [layout, photos, filterCss, frame, stickers, caption])
 
   async function handleDownload(format: ExportFormat) {
     if (!canvas) return

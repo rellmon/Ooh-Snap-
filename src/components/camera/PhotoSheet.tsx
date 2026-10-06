@@ -1,4 +1,5 @@
 import { useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import type { TextCaption } from '../../types/caption'
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
 import type { PlacedSticker } from '../../types/sticker'
@@ -16,6 +17,7 @@ type PhotoSheetProps = {
   photos: string[]
   filterCss: string
   frame: PhotoFrame
+  caption: TextCaption
   stickers: PlacedSticker[]
   selectedUid: string | null
   onSelectSticker: (uid: string) => void
@@ -47,6 +49,7 @@ function PhotoSheet({
   photos,
   filterCss,
   frame,
+  caption,
   stickers,
   selectedUid,
   onSelectSticker,
@@ -184,6 +187,22 @@ function PhotoSheet({
         >
           OOH SNAP!
         </p>
+
+        {caption.content.trim() !== '' && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute whitespace-nowrap font-display font-bold leading-none"
+            style={{
+              left: `${caption.x * 100}%`,
+              top: `${caption.y * 100}%`,
+              transform: 'translate(-50%, -50%)',
+              fontSize: `${caption.size * 100}cqw`,
+              color: caption.color,
+            }}
+          >
+            {caption.content}
+          </span>
+        )}
 
         {stickers.map((sticker, index) => {
           const isSelected = sticker.uid === selectedUid

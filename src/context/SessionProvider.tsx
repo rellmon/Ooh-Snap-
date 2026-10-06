@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import { DEFAULT_ADJUSTMENTS } from '../data/adjustments'
+import { DEFAULT_CAPTION } from '../data/caption'
 import { defaultFilter, getFilterById } from '../data/filters'
 import { defaultFrame, getFrameById } from '../data/frames'
 import { defaultLayout, getLayoutById } from '../data/layouts'
 import { DEFAULT_STICKER_SIZE } from '../data/stickers'
 import type { AdjustmentKey, Adjustments } from '../types/adjustments'
+import type { TextCaption } from '../types/caption'
 import type { FilterId } from '../types/filter'
 import type { FrameId } from '../types/frame'
 import type { LayoutId } from '../types/layout'
@@ -21,6 +23,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   const [frameId, setFrameId] = useState<FrameId>(defaultFrame.id)
   const [adjustments, setAdjustments] =
     useState<Adjustments>(DEFAULT_ADJUSTMENTS)
+  const [caption, setCaption] = useState<TextCaption>(DEFAULT_CAPTION)
   const [stickers, setStickers] = useState<PlacedSticker[]>([])
   const [photos, setPhotos] = useState<string[]>([])
 
@@ -58,6 +61,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     setFilterId(defaultFilter.id)
     setFrameId(defaultFrame.id)
     setAdjustments(DEFAULT_ADJUSTMENTS)
+    setCaption(DEFAULT_CAPTION)
     setStickers([])
     if (photosRef.current.length === 0) return
     photosRef.current.forEach((url) => URL.revokeObjectURL(url))
@@ -85,6 +89,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
     () => setAdjustments(DEFAULT_ADJUSTMENTS),
     [],
   )
+
+  const updateCaption = useCallback((changes: Partial<TextCaption>) => {
+    setCaption((current) => ({ ...current, ...changes }))
+  }, [])
 
   // New stickers land somewhere near the middle, so they don't stack exactly.
   const addSticker = useCallback((emoji: string): string => {
@@ -132,6 +140,8 @@ export function SessionProvider({ children }: SessionProviderProps) {
       resetAdjustments,
       frame,
       selectFrame,
+      caption,
+      updateCaption,
       stickers,
       addSticker,
       removeSticker,
@@ -153,6 +163,8 @@ export function SessionProvider({ children }: SessionProviderProps) {
       resetAdjustments,
       frame,
       selectFrame,
+      caption,
+      updateCaption,
       stickers,
       addSticker,
       removeSticker,
