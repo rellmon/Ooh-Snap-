@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Camera, RotateCcw } from 'lucide-react'
 import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
@@ -29,9 +30,16 @@ function Review() {
     removeSticker,
     clearStickers,
     moveSticker,
+    resizeSticker,
     photos,
     clearPhotos,
   } = useSession()
+
+  // Which sticker is selected is a screen detail, so it lives here, not in the session.
+  const [selectedUid, setSelectedUid] = useState<string | null>(null)
+  // Worked out from the list each time, so a removed sticker is deselected automatically.
+  const selectedSticker =
+    stickers.find((sticker) => sticker.uid === selectedUid) ?? null
 
   // The cheap CSS preview uses these right away...
   const filterCss = buildFilterCss(filter, adjustments)
@@ -92,7 +100,10 @@ function Review() {
         <StickerPicker
           options={stickerOptions}
           placed={stickers}
-          onAdd={addSticker}
+          selected={selectedSticker}
+          onAdd={(emoji) => setSelectedUid(addSticker(emoji))}
+          onSelect={setSelectedUid}
+          onResize={resizeSticker}
           onRemove={removeSticker}
           onClear={clearStickers}
         />
@@ -105,12 +116,15 @@ function Review() {
           filterCss={filterCss}
           frame={frame}
           stickers={stickers}
+          selectedUid={selectedSticker?.uid ?? null}
+          onSelectSticker={setSelectedUid}
           onMoveSticker={moveSticker}
         />
         {stickers.length > 0 && (
           <p className="mt-3 text-center text-sm text-slate-600">
-            Drag a sticker to move it. On a keyboard, focus one and use the
-            arrow keys (hold Shift for bigger steps).
+            Drag a sticker to move it, or select it to change its size. On a
+            keyboard, focus one and use the arrow keys (hold Shift for bigger
+            steps).
           </p>
         )}
       </div>

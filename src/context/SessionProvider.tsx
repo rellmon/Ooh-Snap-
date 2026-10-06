@@ -87,7 +87,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   )
 
   // New stickers land somewhere near the middle, so they don't stack exactly.
-  const addSticker = useCallback((emoji: string) => {
+  const addSticker = useCallback((emoji: string): string => {
     const sticker: PlacedSticker = {
       uid: crypto.randomUUID(),
       emoji,
@@ -96,6 +96,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       size: DEFAULT_STICKER_SIZE,
     }
     setStickers((current) => [...current, sticker])
+    return sticker.uid
   }, [])
 
   const removeSticker = useCallback((uid: string) => {
@@ -108,6 +109,14 @@ export function SessionProvider({ children }: SessionProviderProps) {
     setStickers((current) =>
       current.map((sticker) =>
         sticker.uid === uid ? { ...sticker, x, y } : sticker,
+      ),
+    )
+  }, [])
+
+  const resizeSticker = useCallback((uid: string, size: number) => {
+    setStickers((current) =>
+      current.map((sticker) =>
+        sticker.uid === uid ? { ...sticker, size } : sticker,
       ),
     )
   }, [])
@@ -128,6 +137,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       removeSticker,
       clearStickers,
       moveSticker,
+      resizeSticker,
       photos,
       addPhoto,
       replacePhoto,
@@ -148,6 +158,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       removeSticker,
       clearStickers,
       moveSticker,
+      resizeSticker,
       photos,
       addPhoto,
       replacePhoto,

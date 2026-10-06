@@ -16,10 +16,12 @@ export type SessionContextValue = {
   frame: PhotoFrame
   selectFrame: (id: FrameId) => void
   stickers: PlacedSticker[]
-  addSticker: (emoji: string) => void
+  // Returns the new sticker's id, so the page can select it right away.
+  addSticker: (emoji: string) => string
   removeSticker: (uid: string) => void
-  moveSticker: (uid: string, x: number, y: number) => void
   clearStickers: () => void
+  moveSticker: (uid: string, x: number, y: number) => void
+  resizeSticker: (uid: string, size: number) => void
   photos: string[]
   addPhoto: (url: string) => void
   replacePhoto: (index: number, url: string) => void

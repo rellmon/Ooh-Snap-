@@ -10,4 +10,7 @@ export const stickerOptions: StickerOption[] = [
   { id: 'speech-bubble', name: 'Speech bubble', emoji: '💬' },
 ]
 
+// Sizes are fractions of the sheet's width.
 export const DEFAULT_STICKER_SIZE = 0.16
+export const MIN_STICKER_SIZE = 0.06
+export const MAX_STICKER_SIZE = 0.4

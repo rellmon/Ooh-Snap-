@@ -17,6 +17,8 @@ type PhotoSheetProps = {
   filterCss: string
   frame: PhotoFrame
   stickers: PlacedSticker[]
+  selectedUid: string | null
+  onSelectSticker: (uid: string) => void
   onMoveSticker: (uid: string, x: number, y: number) => void
 }
 
@@ -46,6 +48,8 @@ function PhotoSheet({
   filterCss,
   frame,
   stickers,
+  selectedUid,
+  onSelectSticker,
   onMoveSticker,
 }: PhotoSheetProps) {
   const sheet = getSheetSize(layout)
@@ -73,6 +77,8 @@ function PhotoSheet({
     event: PointerEvent<HTMLButtonElement>,
     sticker: PlacedSticker,
   ) {
+    onSelectSticker(sticker.uid)
+
     const pointer = getPointerFraction(event)
     if (!pointer) return
 
@@ -179,29 +185,35 @@ function PhotoSheet({
           OOH SNAP!
         </p>
 
-        {stickers.map((sticker, index) => (
-          <button
-            key={sticker.uid}
-            type="button"
-            aria-label={`Sticker ${index + 1}. Drag it, or use the arrow keys, to move it.`}
-            onPointerDown={(event) => handlePointerDown(event, sticker)}
-            onPointerMove={(event) => handlePointerMove(event, sticker)}
-            onPointerUp={handlePointerEnd}
-            onPointerCancel={handlePointerEnd}
-            onKeyDown={(event) => handleKeyDown(event, sticker)}
-            className="absolute cursor-grab select-none rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing"
-            style={{
-              left: `${sticker.x * 100}%`,
-              top: `${sticker.y * 100}%`,
-              transform: 'translate(-50%, -50%)',
-              fontSize: `${sticker.size * 100}cqw`,
-              fontFamily: EMOJI_FONT_FAMILY,
-              touchAction: 'none',
-            }}
-          >
-            <span aria-hidden="true">{sticker.emoji}</span>
-          </button>
-        ))}
+        {stickers.map((sticker, index) => {
+          const isSelected = sticker.uid === selectedUid
+          return (
+            <button
+              key={sticker.uid}
+              type="button"
+              aria-label={`Sticker ${index + 1}${isSelected ? ', selected' : ''}. Drag it, or use the arrow keys, to move it.`}
+              onPointerDown={(event) => handlePointerDown(event, sticker)}
+              onPointerMove={(event) => handlePointerMove(event, sticker)}
+              onPointerUp={handlePointerEnd}
+              onPointerCancel={handlePointerEnd}
+              onFocus={() => onSelectSticker(sticker.uid)}
+              onKeyDown={(event) => handleKeyDown(event, sticker)}
+              className={`absolute cursor-grab select-none rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing ${
+                isSelected ? 'ring-2 ring-brand-600' : ''
+              }`}
+              style={{
+                left: `${sticker.x * 100}%`,
+                top: `${sticker.y * 100}%`,
+                transform: 'translate(-50%, -50%)',
+                fontSize: `${sticker.size * 100}cqw`,
+                fontFamily: EMOJI_FONT_FAMILY,
+                touchAction: 'none',
+              }}
+            >
+              <span aria-hidden="true">{sticker.emoji}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
