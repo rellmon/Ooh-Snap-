@@ -9,10 +9,18 @@ import {
   Timer,
 } from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
+import CountdownPicker from '../components/camera/CountdownPicker'
 import Button from '../components/ui/Button'
 import { useCamera } from '../hooks/useCamera'
 import { useCountdown } from '../hooks/useCountdown'
+import { usePersistentState } from '../hooks/usePersistentState'
 import { useSession } from '../hooks/useSession'
+import {
+  COUNTDOWN_STORAGE_KEY,
+  countdownOptions,
+  DEFAULT_COUNTDOWN_SECONDS,
+  isCountdownSeconds,
+} from '../data/settings'
 import { capturePhoto } from '../utils/capturePhoto'
 
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
@@ -30,6 +38,11 @@ function Booth() {
   } = useCamera()
   const { layout, photos, addPhoto, replacePhoto, clearPhotos } = useSession()
   const totalPhotos = layout.photoCount
+  const [countdownSeconds, setCountdownSeconds] = usePersistentState(
+    COUNTDOWN_STORAGE_KEY,
+    DEFAULT_COUNTDOWN_SECONDS,
+    isCountdownSeconds,
+  )
   const [isRunning, setIsRunning] = useState(false)
   const [retakeIndex, setRetakeIndex] = useState<number | null>(null)
   const [captureError, setCaptureError] = useState<string | null>(null)
@@ -58,7 +71,11 @@ function Booth() {
     }
   }, [videoRef, facingMode, retakeIndex, addPhoto, replacePhoto])
 
-  const { count, start: startCountdown, cancel } = useCountdown(3, handleSnap)
+  const {
+    count,
+    start: startCountdown,
+    cancel,
+  } = useCountdown(countdownSeconds, handleSnap)
 
   // While a session is running, wait a moment and start the next countdown.
   useEffect(() => {
@@ -167,6 +184,14 @@ function Booth() {
                   ? `Photo ${photos.length + 1} of ${totalPhotos}`
                   : `${photos.length} of ${totalPhotos} photos taken`}
           </p>
+
+          {!isBusy && (
+            <CountdownPicker
+              options={countdownOptions}
+              selected={countdownSeconds}
+              onSelect={setCountdownSeconds}
+            />
+          )}
 
           <div className="flex flex-wrap justify-center gap-3">
             {isBusy ? (
