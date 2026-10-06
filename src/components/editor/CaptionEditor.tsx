@@ -20,15 +20,15 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
   const hasText = caption.content.trim() !== ''
 
   return (
-    <Card className="mx-auto max-w-md space-y-4">
-      <h2 className="text-center text-lg font-bold">Text</h2>
+    <Card className="mx-auto max-w-md space-y-5">
+      <h2 className="text-center text-2xl">Text</h2>
 
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="caption-text" className="font-semibold">
+          <label htmlFor="caption-text" className="field-label">
             Caption
           </label>
-          <span className="text-sm text-slate-600">
+          <span className="field-value">
             {caption.content.length}/{MAX_CAPTION_LENGTH}
           </span>
         </div>
@@ -39,16 +39,16 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
           maxLength={MAX_CAPTION_LENGTH}
           placeholder="Say something fun..."
           onChange={(event) => onChange({ content: event.target.value })}
-          className="mt-2 w-full rounded-full bg-white px-4 py-2 ring-1 ring-brand-200 focus-visible:outline-2 focus-visible:outline-brand-600"
+          className="mt-2 w-full border-2 border-ink bg-white px-4 py-2.5 text-lg shadow-hard-sm placeholder:text-ink/50 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
         />
       </div>
 
       <div>
-        <p className="font-semibold">Font</p>
+        <p className="field-label">Font</p>
         <div
           role="group"
           aria-label="Text font"
-          className="mt-2 flex flex-wrap gap-2"
+          className="mt-2 flex flex-wrap gap-3"
         >
           {captionFonts.map((font) => {
             const isSelected = caption.fontId === font.id
@@ -59,7 +59,11 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
                 variant={isSelected ? 'primary' : 'secondary'}
                 aria-pressed={isSelected}
                 onClick={() => onChange({ fontId: font.id })}
-                style={{ fontFamily: font.family, fontWeight: font.weight }}
+                style={{
+                  fontFamily: font.family,
+                  fontWeight: font.weight,
+                  textTransform: 'none',
+                }}
               >
                 {font.name}
               </Button>
@@ -69,7 +73,7 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
       </div>
 
       <div>
-        <p className="font-semibold">Color</p>
+        <p className="field-label">Color</p>
         <div
           role="group"
           aria-label="Text color"
@@ -84,10 +88,8 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
                 aria-label={color.name}
                 aria-pressed={isSelected}
                 onClick={() => onChange({ color: color.value })}
-                className={`h-9 w-9 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 ${
-                  isSelected
-                    ? 'ring-2 ring-brand-600 ring-offset-2'
-                    : 'ring-1 ring-black/20'
+                className={`h-10 w-10 border-2 border-ink transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
+                  isSelected ? '-translate-x-0.5 -translate-y-0.5 shadow-hard' : ''
                 }`}
                 style={{ backgroundColor: color.value }}
               />
@@ -100,10 +102,10 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
         <>
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="caption-size" className="font-semibold">
+              <label htmlFor="caption-size" className="field-label">
                 Size
               </label>
-              <span className="text-sm text-slate-600">
+              <span className="field-value">
                 {Math.round(caption.size * 100)}%
               </span>
             </div>
@@ -117,18 +119,16 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
               onChange={(event) =>
                 onChange({ size: Number(event.target.value) / 100 })
               }
-              className="mt-2 w-full accent-brand-600"
+              className="mt-2 w-full"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="caption-tilt" className="font-semibold">
+              <label htmlFor="caption-tilt" className="field-label">
                 Tilt
               </label>
-              <span className="text-sm text-slate-600">
-                {caption.rotation}°
-              </span>
+              <span className="field-value">{caption.rotation}°</span>
             </div>
             <input
               id="caption-tilt"
@@ -140,7 +140,7 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
               onChange={(event) =>
                 onChange({ rotation: Number(event.target.value) })
               }
-              className="mt-2 w-full accent-brand-600"
+              className="mt-2 w-full"
             />
           </div>
         </>

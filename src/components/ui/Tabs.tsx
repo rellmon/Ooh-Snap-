@@ -45,11 +45,12 @@ function Tabs<Id extends string>({
 
   return (
     <div>
+      {/* The padding leaves room for the shadows, which the scroll area would clip. */}
       <div
         role="tablist"
         aria-label={label}
         onKeyDown={handleKeyDown}
-        className="flex gap-2 overflow-x-auto pb-2"
+        className="flex gap-3 overflow-x-auto p-2 pb-3"
       >
         {tabs.map((tab) => {
           const isActive = tab.id === activeId
@@ -63,10 +64,10 @@ function Tabs<Id extends string>({
               aria-controls={`panel-${tab.id}`}
               tabIndex={isActive ? 0 : -1}
               onClick={() => onChange(tab.id)}
-              className={`shrink-0 rounded-full px-4 py-2 font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 ${
+              className={`shrink-0 border-2 border-ink px-4 py-2 font-condensed text-lg font-extrabold uppercase tracking-wide transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
                 isActive
-                  ? 'bg-brand-600 text-white shadow'
-                  : 'bg-white text-brand-600 ring-1 ring-brand-200 hover:bg-brand-50'
+                  ? 'bg-sun shadow-hard'
+                  : 'bg-paper hover:-translate-y-0.5 hover:bg-white'
               }`}
             >
               {tab.label}
@@ -80,7 +81,7 @@ function Tabs<Id extends string>({
         id={`panel-${activeId}`}
         aria-labelledby={`tab-${activeId}`}
         tabIndex={0}
-        className="mt-4 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600"
+        className="mt-4 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink"
       >
         {children}
       </div>

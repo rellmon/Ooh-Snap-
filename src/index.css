@@ -28,6 +28,21 @@
   --color-brand-700: #be185d;
 }
 
+/* Reusable styles for the labels above form controls. */
+@utility field-label {
+  font-family: var(--font-condensed);
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+@utility field-value {
+  font-family: var(--font-condensed);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
 @layer base {
   body {
     background-color: var(--color-paper);
@@ -49,5 +64,56 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+  }
+
+  /* Sliders. The track and the thumb need separate rules for each browser engine. */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 1.75rem;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type="range"]:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    box-sizing: border-box;
+    height: 0.75rem;
+    background: #ffffff;
+    border: 2px solid var(--color-ink);
+  }
+
+  input[type="range"]::-moz-range-track {
+    box-sizing: border-box;
+    height: 0.75rem;
+    background: #ffffff;
+    border: 2px solid var(--color-ink);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: -0.375rem;
+    background: var(--color-sun);
+    border: 2px solid var(--color-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    box-sizing: border-box;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--color-sun);
+    border: 2px solid var(--color-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-hard-sm);
   }
 }

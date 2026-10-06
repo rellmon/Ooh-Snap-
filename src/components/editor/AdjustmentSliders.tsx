@@ -25,14 +25,14 @@ function AdjustmentSliders({
   )
 
   return (
-    <Card className="mx-auto max-w-md space-y-4">
+    <Card className="mx-auto max-w-md space-y-5">
       {controls.map(({ key, label, min, max }) => (
         <div key={key}>
           <div className="flex items-center justify-between">
-            <label htmlFor={`adjust-${key}`} className="font-semibold">
+            <label htmlFor={`adjust-${key}`} className="field-label">
               {label}
             </label>
-            <span className="text-sm text-slate-600">{values[key]}%</span>
+            <span className="field-value">{values[key]}%</span>
           </div>
           <input
             id={`adjust-${key}`}
@@ -42,7 +42,7 @@ function AdjustmentSliders({
             step={1}
             value={values[key]}
             onChange={(event) => onChange(key, Number(event.target.value))}
-            className="mt-2 w-full accent-brand-600"
+            className="mt-2 w-full"
           />
         </div>
       ))}

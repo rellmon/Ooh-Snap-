@@ -26,13 +26,13 @@ function StickerPicker({
   onClear,
 }: StickerPickerProps) {
   return (
-    <Card className="mx-auto max-w-md space-y-4">
+    <Card className="mx-auto max-w-md space-y-5">
       <div>
-        <h2 className="text-center text-lg font-bold">Stickers</h2>
+        <h2 className="text-center text-2xl">Stickers</h2>
         <div
           role="group"
           aria-label="Add a sticker"
-          className="mt-3 flex flex-wrap justify-center gap-2"
+          className="mt-3 flex flex-wrap justify-center gap-3"
         >
           {options.map((option) => (
             <button
@@ -40,7 +40,7 @@ function StickerPicker({
               type="button"
               aria-label={`Add ${option.name} sticker`}
               onClick={() => onAdd(option.emoji)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl ring-1 ring-brand-200 transition hover:-translate-y-0.5 hover:bg-brand-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+              className="flex h-12 w-12 items-center justify-center border-2 border-ink bg-white text-2xl shadow-hard-sm transition-[translate,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-sun hover:shadow-hard active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               <span aria-hidden="true">{option.emoji}</span>
             </button>
@@ -50,10 +50,10 @@ function StickerPicker({
 
       {placed.length > 0 && (
         <div>
-          <p className="text-center text-sm font-semibold text-slate-600">
+          <p className="text-center text-sm font-semibold text-ink/70">
             On your sheet (tap one to select it)
           </p>
-          <ul className="mt-2 flex flex-wrap justify-center gap-2">
+          <ul className="mt-3 flex flex-wrap justify-center gap-3">
             {placed.map((sticker, index) => {
               const isSelected = sticker.uid === selected?.uid
               return (
@@ -63,10 +63,10 @@ function StickerPicker({
                     aria-label={`Select sticker ${index + 1}`}
                     aria-pressed={isSelected}
                     onClick={() => onSelect(sticker.uid)}
-                    className={`flex h-12 w-12 items-center justify-center rounded-full text-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 ${
+                    className={`flex h-12 w-12 items-center justify-center border-2 border-ink text-2xl transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
                       isSelected
-                        ? 'bg-brand-100 ring-2 ring-brand-600'
-                        : 'bg-white ring-1 ring-brand-200 hover:bg-brand-50'
+                        ? 'bg-sun shadow-hard'
+                        : 'bg-white hover:bg-paper'
                     }`}
                   >
                     <span aria-hidden="true">{sticker.emoji}</span>
@@ -81,10 +81,10 @@ function StickerPicker({
       {selected && (
         <div>
           <div className="flex items-center justify-between">
-            <label htmlFor="sticker-size" className="font-semibold">
+            <label htmlFor="sticker-size" className="field-label">
               Size of selected sticker
             </label>
-            <span className="text-sm text-slate-600">
+            <span className="field-value">
               {Math.round(selected.size * 100)}%
             </span>
           </div>
@@ -98,7 +98,7 @@ function StickerPicker({
             onChange={(event) =>
               onResize(selected.uid, Number(event.target.value) / 100)
             }
-            className="mt-2 w-full accent-brand-600"
+            className="mt-2 w-full"
           />
           <div className="mt-3 flex justify-center">
             <Button

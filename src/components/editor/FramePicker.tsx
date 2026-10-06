@@ -23,7 +23,7 @@ function FramePicker({ frames, selectedId, onSelect }: FramePickerProps) {
         >
           <span
             aria-hidden="true"
-            className="h-4 w-4 rounded-full ring-1 ring-black/30"
+            className="h-4 w-4 border-2 border-ink"
             style={{ backgroundColor: frame.background }}
           />
           {frame.name}
