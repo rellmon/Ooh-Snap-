@@ -3,6 +3,7 @@ import type { AdjustmentKey, Adjustments } from '../types/adjustments'
 import type { FilterId, PhotoFilter } from '../types/filter'
 import type { FrameId, PhotoFrame } from '../types/frame'
 import type { LayoutId, PhotoLayout } from '../types/layout'
+import type { PlacedSticker } from '../types/sticker'
 
 export type SessionContextValue = {
   layout: PhotoLayout
@@ -14,6 +15,10 @@ export type SessionContextValue = {
   resetAdjustments: () => void
   frame: PhotoFrame
   selectFrame: (id: FrameId) => void
+  stickers: PlacedSticker[]
+  addSticker: (emoji: string) => void
+  removeSticker: (uid: string) => void
+  clearStickers: () => void
   photos: string[]
   addPhoto: (url: string) => void
   replacePhoto: (index: number, url: string) => void

@@ -1,7 +1,9 @@
 import type { PhotoFrame } from '../types/frame'
 import type { PhotoLayout } from '../types/layout'
+import type { PlacedSticker } from '../types/sticker'
 import {
   CORNER_RADIUS,
+  EMOJI_FONT_FAMILY,
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   getCellRect,
@@ -56,6 +58,7 @@ export async function composeSheet(
   photos: string[],
   filterCss: string,
   frame: PhotoFrame,
+  stickers: PlacedSticker[],
 ): Promise<HTMLCanvasElement> {
   const images = await Promise.all(
     photos.slice(0, layout.photoCount).map(loadImage),
@@ -107,6 +110,18 @@ export async function composeSheet(
     canvas.width / 2,
     sheet.height - FOOTER_HEIGHT / 2,
   )
+
+  // Stickers go last, so they sit on top of everything else.
+  for (const sticker of stickers) {
+    context.font = `${sticker.size * sheet.width}px ${EMOJI_FONT_FAMILY}`
+    context.textAlign = 'center'
+    context.textBaseline = 'middle'
+    context.fillText(
+      sticker.emoji,
+      sticker.x * sheet.width,
+      sticker.y * sheet.height,
+    )
+  }
 
   return canvas
 }

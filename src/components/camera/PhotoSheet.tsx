@@ -1,7 +1,9 @@
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
+import type { PlacedSticker } from '../../types/sticker'
 import {
   CORNER_RADIUS,
+  EMOJI_FONT_FAMILY,
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   getCellRect,
@@ -13,10 +15,17 @@ type PhotoSheetProps = {
   photos: string[]
   filterCss: string
   frame: PhotoFrame
+  stickers: PlacedSticker[]
 }
 
 // A scaled-down replica of the canvas sheet, built from the same measurements.
-function PhotoSheet({ layout, photos, filterCss, frame }: PhotoSheetProps) {
+function PhotoSheet({
+  layout,
+  photos,
+  filterCss,
+  frame,
+  stickers,
+}: PhotoSheetProps) {
   const sheet = getSheetSize(layout)
 
   // Canvas pixels -> percentages of the sheet (for positions and sizes).
@@ -82,6 +91,23 @@ function PhotoSheet({ layout, photos, filterCss, frame }: PhotoSheetProps) {
         >
           OOH SNAP!
         </p>
+
+        {stickers.map((sticker) => (
+          <span
+            key={sticker.uid}
+            aria-hidden="true"
+            className="pointer-events-none absolute leading-none"
+            style={{
+              left: `${sticker.x * 100}%`,
+              top: `${sticker.y * 100}%`,
+              transform: 'translate(-50%, -50%)',
+              fontSize: `${sticker.size * 100}cqw`,
+              fontFamily: EMOJI_FONT_FAMILY,
+            }}
+          >
+            {sticker.emoji}
+          </span>
+        ))}
       </div>
     </div>
   )

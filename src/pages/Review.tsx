@@ -4,10 +4,12 @@ import PhotoSheet from '../components/camera/PhotoSheet'
 import AdjustmentSliders from '../components/editor/AdjustmentSliders'
 import FilterPicker from '../components/editor/FilterPicker'
 import FramePicker from '../components/editor/FramePicker'
+import StickerPicker from '../components/editor/StickerPicker'
 import Button from '../components/ui/Button'
 import { adjustmentControls } from '../data/adjustments'
 import { filters } from '../data/filters'
 import { frames } from '../data/frames'
+import { stickerOptions } from '../data/stickers'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useSession } from '../hooks/useSession'
 import { buildFilterCss } from '../utils/filterCss'
@@ -22,6 +24,10 @@ function Review() {
     resetAdjustments,
     frame,
     selectFrame,
+    stickers,
+    addSticker,
+    removeSticker,
+    clearStickers,
     photos,
     clearPhotos,
   } = useSession()
@@ -80,12 +86,23 @@ function Review() {
         />
       </div>
 
+      <div className="mt-6">
+        <StickerPicker
+          options={stickerOptions}
+          placed={stickers}
+          onAdd={addSticker}
+          onRemove={removeSticker}
+          onClear={clearStickers}
+        />
+      </div>
+
       <div className="mt-8">
         <PhotoSheet
           layout={layout}
           photos={photos}
           filterCss={filterCss}
           frame={frame}
+          stickers={stickers}
         />
       </div>
 
@@ -101,6 +118,7 @@ function Review() {
           photos={photos}
           filterCss={finalFilterCss}
           frame={frame}
+          stickers={stickers}
         />
       </section>
 

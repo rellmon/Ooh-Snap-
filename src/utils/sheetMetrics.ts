@@ -9,6 +9,10 @@ export const FOOTER_HEIGHT = 120
 export const CORNER_RADIUS = 20
 export const FOOTER_FONT_SIZE = 56
 
+// Used for stickers in both the preview and the canvas, so they match.
+export const EMOJI_FONT_FAMILY =
+  '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'
+
 type SheetSize = {
   width: number
   height: number

@@ -3,10 +3,12 @@ import { DEFAULT_ADJUSTMENTS } from '../data/adjustments'
 import { defaultFilter, getFilterById } from '../data/filters'
 import { defaultFrame, getFrameById } from '../data/frames'
 import { defaultLayout, getLayoutById } from '../data/layouts'
+import { DEFAULT_STICKER_SIZE } from '../data/stickers'
 import type { AdjustmentKey, Adjustments } from '../types/adjustments'
 import type { FilterId } from '../types/filter'
 import type { FrameId } from '../types/frame'
 import type { LayoutId } from '../types/layout'
+import type { PlacedSticker } from '../types/sticker'
 import { SessionContext } from './SessionContext'
 
 type SessionProviderProps = {
@@ -19,6 +21,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   const [frameId, setFrameId] = useState<FrameId>(defaultFrame.id)
   const [adjustments, setAdjustments] =
     useState<Adjustments>(DEFAULT_ADJUSTMENTS)
+  const [stickers, setStickers] = useState<PlacedSticker[]>([])
   const [photos, setPhotos] = useState<string[]>([])
 
   const layout = getLayoutById(layoutId)
@@ -55,6 +58,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     setFilterId(defaultFilter.id)
     setFrameId(defaultFrame.id)
     setAdjustments(DEFAULT_ADJUSTMENTS)
+    setStickers([])
     if (photosRef.current.length === 0) return
     photosRef.current.forEach((url) => URL.revokeObjectURL(url))
     updatePhotos([])
@@ -82,6 +86,24 @@ export function SessionProvider({ children }: SessionProviderProps) {
     [],
   )
 
+  // New stickers land somewhere near the middle, so they don't stack exactly.
+  const addSticker = useCallback((emoji: string) => {
+    const sticker: PlacedSticker = {
+      uid: crypto.randomUUID(),
+      emoji,
+      x: 0.3 + Math.random() * 0.4,
+      y: 0.3 + Math.random() * 0.4,
+      size: DEFAULT_STICKER_SIZE,
+    }
+    setStickers((current) => [...current, sticker])
+  }, [])
+
+  const removeSticker = useCallback((uid: string) => {
+    setStickers((current) => current.filter((sticker) => sticker.uid !== uid))
+  }, [])
+
+  const clearStickers = useCallback(() => setStickers([]), [])
+
   const value = useMemo(
     () => ({
       layout,
@@ -93,6 +115,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
       resetAdjustments,
       frame,
       selectFrame,
+      stickers,
+      addSticker,
+      removeSticker,
+      clearStickers,
       photos,
       addPhoto,
       replacePhoto,
@@ -108,6 +134,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
       resetAdjustments,
       frame,
       selectFrame,
+      stickers,
+      addSticker,
+      removeSticker,
+      clearStickers,
       photos,
       addPhoto,
       replacePhoto,
