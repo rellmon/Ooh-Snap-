@@ -1,5 +1,12 @@
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
+import {
+  CORNER_RADIUS,
+  FOOTER_FONT_SIZE,
+  FOOTER_HEIGHT,
+  getCellRect,
+  getSheetSize,
+} from '../../utils/sheetMetrics'
 
 type PhotoSheetProps = {
   layout: PhotoLayout
@@ -8,26 +15,43 @@ type PhotoSheetProps = {
   frame: PhotoFrame
 }
 
-// Arranges photos the way the chosen layout describes.
+// A scaled-down replica of the canvas sheet, built from the same measurements.
 function PhotoSheet({ layout, photos, filterCss, frame }: PhotoSheetProps) {
+  const sheet = getSheetSize(layout)
+
+  // Canvas pixels -> percentages of the sheet (for positions and sizes).
+  const percentX = (value: number) => `${(value / sheet.width) * 100}%`
+  const percentY = (value: number) => `${(value / sheet.height) * 100}%`
+  // Canvas pixels -> units of the sheet's width (for radius and text size).
+  const scaled = (value: number) => `${(value / sheet.width) * 100}cqw`
+
   return (
     <div
-      className="mx-auto w-full rounded-2xl p-3 shadow-xl ring-1 ring-black/5"
-      style={{
-        maxWidth: `${layout.columns * 14}rem`,
-        backgroundColor: frame.background,
-      }}
+      className="@container mx-auto w-full"
+      style={{ maxWidth: `${layout.columns * 14}rem` }}
     >
-      <ol
-        className="grid gap-2"
-        style={{ gridTemplateColumns: `repeat(${layout.columns}, 1fr)` }}
+      <div
+        className="relative w-full overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5"
+        style={{
+          aspectRatio: `${sheet.width} / ${sheet.height}`,
+          backgroundColor: frame.background,
+        }}
       >
         {Array.from({ length: layout.photoCount }, (_, index) => {
+          const cell = getCellRect(layout, index)
           const photo = photos[index]
+
           return (
-            <li
+            <div
               key={index}
-              className="aspect-[4/3] overflow-hidden rounded-lg bg-brand-100"
+              className="absolute overflow-hidden bg-brand-100"
+              style={{
+                left: percentX(cell.x),
+                top: percentY(cell.y),
+                width: percentX(cell.width),
+                height: percentY(cell.height),
+                borderRadius: scaled(CORNER_RADIUS),
+              }}
             >
               {photo ? (
                 <img
@@ -37,21 +61,28 @@ function PhotoSheet({ layout, photos, filterCss, frame }: PhotoSheetProps) {
                   style={{ filter: filterCss }}
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-xl font-bold text-brand-300">
+                <div
+                  className="flex h-full items-center justify-center font-bold text-brand-300"
+                  style={{ fontSize: scaled(48) }}
+                >
                   {index + 1}
                 </div>
               )}
-            </li>
+            </div>
           )
         })}
-      </ol>
 
-      <p
-        className="mt-3 text-center font-display text-sm font-bold tracking-widest"
-        style={{ color: frame.textColor }}
-      >
-        OOH SNAP!
-      </p>
+        <p
+          className="absolute inset-x-0 bottom-0 flex items-center justify-center font-display font-bold"
+          style={{
+            height: percentY(FOOTER_HEIGHT),
+            fontSize: scaled(FOOTER_FONT_SIZE),
+            color: frame.textColor,
+          }}
+        >
+          OOH SNAP!
+        </p>
+      </div>
     </div>
   )
 }

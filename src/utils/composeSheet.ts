@@ -1,16 +1,15 @@
 import type { PhotoFrame } from '../types/frame'
 import type { PhotoLayout } from '../types/layout'
-
-// Sizes are in canvas pixels, not screen pixels.
-const CELL_WIDTH = 800
-const CELL_HEIGHT = 600
-const PADDING = 40
-const GAP = 24
-const FOOTER_HEIGHT = 120
-const CORNER_RADIUS = 20
+import {
+  CORNER_RADIUS,
+  FOOTER_FONT_SIZE,
+  FOOTER_HEIGHT,
+  getCellRect,
+  getSheetSize,
+} from './sheetMetrics'
 
 const PLACEHOLDER_COLOR = '#fce7f3'
-const FOOTER_FONT = '700 56px Fredoka, system-ui, sans-serif'
+const FOOTER_FONT = `700 ${FOOTER_FONT_SIZE}px Fredoka, system-ui, sans-serif`
 
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -65,13 +64,11 @@ export async function composeSheet(
   // Make sure the footer font is ready before we draw with it.
   await document.fonts.load(FOOTER_FONT)
 
-  const gridWidth =
-    layout.columns * CELL_WIDTH + (layout.columns - 1) * GAP
-  const gridHeight = layout.rows * CELL_HEIGHT + (layout.rows - 1) * GAP
+  const sheet = getSheetSize(layout)
 
   const canvas = document.createElement('canvas')
-  canvas.width = PADDING * 2 + gridWidth
-  canvas.height = PADDING + gridHeight + FOOTER_HEIGHT
+  canvas.width = sheet.width
+  canvas.height = sheet.height
 
   const context = canvas.getContext('2d')
   if (!context) {
@@ -82,23 +79,20 @@ export async function composeSheet(
   context.fillRect(0, 0, canvas.width, canvas.height)
 
   for (let index = 0; index < layout.photoCount; index++) {
-    const column = index % layout.columns
-    const row = Math.floor(index / layout.columns)
-    const x = PADDING + column * (CELL_WIDTH + GAP)
-    const y = PADDING + row * (CELL_HEIGHT + GAP)
+    const { x, y, width, height } = getCellRect(layout, index)
     const image = images[index]
 
     context.save()
     context.beginPath()
-    context.roundRect(x, y, CELL_WIDTH, CELL_HEIGHT, CORNER_RADIUS)
+    context.roundRect(x, y, width, height, CORNER_RADIUS)
     context.clip()
 
     if (image) {
       context.filter = filterCss
-      drawCover(context, image, x, y, CELL_WIDTH, CELL_HEIGHT)
+      drawCover(context, image, x, y, width, height)
     } else {
       context.fillStyle = PLACEHOLDER_COLOR
-      context.fillRect(x, y, CELL_WIDTH, CELL_HEIGHT)
+      context.fillRect(x, y, width, height)
     }
 
     context.restore()
@@ -111,7 +105,7 @@ export async function composeSheet(
   context.fillText(
     'OOH SNAP!',
     canvas.width / 2,
-    PADDING + gridHeight + FOOTER_HEIGHT / 2,
+    sheet.height - FOOTER_HEIGHT / 2,
   )
 
   return canvas
