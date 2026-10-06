@@ -1,7 +1,22 @@
+import { useEffect, useRef } from 'react'
+import { motion, MotionConfig } from 'framer-motion'
 import { Camera } from 'lucide-react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 
 function Layout() {
+  const { pathname } = useLocation()
+  const mainRef = useRef<HTMLElement>(null)
+  const previousPath = useRef(pathname)
+
+  // When the page changes, start at the top and move focus to the new content.
+  useEffect(() => {
+    if (previousPath.current === pathname) return
+    previousPath.current = pathname
+
+    window.scrollTo(0, 0)
+    mainRef.current?.focus({ preventScroll: true })
+  }, [pathname])
+
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink">
       <header className="border-b-2 border-ink">
@@ -25,8 +40,17 @@ function Layout() {
         </div>
       </header>
 
-      <main className="flex-1">
-        <Outlet />
+      <main ref={mainRef} tabIndex={-1} className="flex-1 focus:outline-none">
+        <MotionConfig reducedMotion="user">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Outlet />
+          </motion.div>
+        </MotionConfig>
       </main>
 
       <footer className="border-t-2 border-ink">

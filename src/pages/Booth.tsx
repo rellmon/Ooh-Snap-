@@ -20,12 +20,14 @@ import {
 import { useCamera } from '../hooks/useCamera'
 import { useCountdown } from '../hooks/useCountdown'
 import { usePersistentState } from '../hooks/usePersistentState'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 import { capturePhoto } from '../utils/capturePhoto'
 
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
 
 function Booth() {
+  usePageTitle('The booth')
   const {
     videoRef,
     status,

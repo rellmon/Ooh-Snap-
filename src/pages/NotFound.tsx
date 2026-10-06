@@ -1,6 +1,8 @@
 import Button from '../components/ui/Button'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 function NotFound() {
+  usePageTitle('Page not found')
   return (
     <section className="flex flex-col items-center overflow-x-clip px-6 py-20 text-center">
       <div className="relative">

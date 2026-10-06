@@ -4,6 +4,7 @@ import { Camera, Download, Sparkles } from 'lucide-react'
 import PhotoStripArt from '../components/home/PhotoStripArt'
 import ArrowButton from '../components/ui/ArrowButton'
 import Card from '../components/ui/Card'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 
 const steps = [
@@ -32,6 +33,7 @@ const rise = (delay: number) => ({
 })
 
 function Home() {
+  usePageTitle()
   const { clearPhotos } = useSession()
 
   // Visiting the home page ends the old session, so a new one starts clean.

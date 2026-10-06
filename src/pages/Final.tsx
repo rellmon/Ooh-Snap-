@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import ComposedPreview from '../components/camera/ComposedPreview'
 import NoPhotos from '../components/camera/NoPhotos'
 import Button from '../components/ui/Button'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 import { buildFilterCss } from '../utils/filterCss'
 
 function Final() {
+  usePageTitle('Your photo is ready')
   const {
     layout,
     photos,

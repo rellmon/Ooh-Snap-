@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import { layouts } from '../data/layouts'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 import type { PhotoLayout } from '../types/layout'
 
@@ -29,6 +30,7 @@ function LayoutPreview({ layout }: { layout: PhotoLayout }) {
 }
 
 function Templates() {
+  usePageTitle('Pick your layout')
   const { selectLayout } = useSession()
   const navigate = useNavigate()
 

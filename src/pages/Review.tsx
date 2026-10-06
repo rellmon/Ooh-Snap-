@@ -5,9 +5,11 @@ import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
 import { DEFAULT_CAPTION } from '../data/caption'
 import { defaultFrame } from '../data/frames'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 
 function Review() {
+  usePageTitle('Review your photos')
   const { layout, photos, clearPhotos } = useSession()
 
   if (photos.length === 0) {

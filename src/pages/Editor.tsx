@@ -14,6 +14,7 @@ import { adjustmentControls } from '../data/adjustments'
 import { filters } from '../data/filters'
 import { frames } from '../data/frames'
 import { stickerOptions } from '../data/stickers'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
 import { buildFilterCss } from '../utils/filterCss'
 
@@ -28,6 +29,7 @@ const tabs: TabItem<EditorTab>[] = [
 ]
 
 function Editor() {
+  usePageTitle('Edit your photo')
   const {
     layout,
     filter,
