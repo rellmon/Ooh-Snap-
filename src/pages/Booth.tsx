@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   ArrowLeft,
-  ArrowRight,
   Camera,
   CameraOff,
   RotateCcw,
@@ -10,17 +9,18 @@ import {
 } from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
 import CountdownPicker from '../components/camera/CountdownPicker'
+import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
-import { useCamera } from '../hooks/useCamera'
-import { useCountdown } from '../hooks/useCountdown'
-import { usePersistentState } from '../hooks/usePersistentState'
-import { useSession } from '../hooks/useSession'
 import {
   COUNTDOWN_STORAGE_KEY,
   countdownOptions,
   DEFAULT_COUNTDOWN_SECONDS,
   isCountdownSeconds,
 } from '../data/settings'
+import { useCamera } from '../hooks/useCamera'
+import { useCountdown } from '../hooks/useCountdown'
+import { usePersistentState } from '../hooks/usePersistentState'
+import { useSession } from '../hooks/useSession'
 import { capturePhoto } from '../utils/capturePhoto'
 
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
@@ -120,14 +120,18 @@ function Booth() {
         </Button>
       </div>
 
-      <h1 className="text-center text-4xl font-bold text-brand-600">
+      <h1 className="text-center text-6xl leading-none sm:text-7xl">
         The Booth
       </h1>
-      <p className="mt-1 text-center text-slate-600">Layout: {layout.name}</p>
+      <p className="mt-4 text-center">
+        <span className="inline-block border-2 border-ink bg-sun px-3 py-1 font-condensed text-lg font-extrabold uppercase tracking-wide">
+          Layout: {layout.name}
+        </span>
+      </p>
 
       <section
         aria-label="Camera stage"
-        className="relative mt-6 aspect-video overflow-hidden rounded-3xl bg-slate-900 shadow-xl"
+        className="relative mt-8 aspect-video overflow-hidden border-2 border-ink bg-ink shadow-hard-lg"
       >
         <video
           ref={videoRef}
@@ -139,27 +143,45 @@ function Booth() {
           }`}
         />
 
+        {status === 'active' && (
+          <span
+            aria-hidden="true"
+            className="absolute left-3 top-3 border-2 border-ink bg-blaze px-2 font-condensed text-sm font-extrabold uppercase tracking-wide"
+          >
+            Live
+          </span>
+        )}
+
         {status !== 'active' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center text-slate-200">
-            <Camera size={48} aria-hidden="true" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center text-paper">
+            <span
+              aria-hidden="true"
+              className="flex h-16 w-16 items-center justify-center border-2 border-paper bg-sun text-ink"
+            >
+              <Camera size={32} />
+            </span>
 
             {status === 'idle' && (
               <>
-                <p>Ready when you are. Let's turn on the camera.</p>
+                <p className="text-lg">
+                  Ready when you are. Let's turn on the camera.
+                </p>
                 <Button onClick={start}>Turn on camera</Button>
               </>
             )}
 
             {status === 'requesting' && (
               <>
-                <p>Starting the camera... Allow access if your browser asks.</p>
+                <p className="text-lg">
+                  Starting the camera... Allow access if your browser asks.
+                </p>
                 <Button disabled>Turn on camera</Button>
               </>
             )}
 
             {status === 'error' && error && (
               <>
-                <p role="alert" className="max-w-md">
+                <p role="alert" className="max-w-md text-lg">
                   {error.message}
                 </p>
                 {error.kind !== 'unsupported' && (
@@ -174,8 +196,11 @@ function Booth() {
       </section>
 
       {status === 'active' && (
-        <div className="mt-6 text-center">
-          <p aria-live="polite" className="mb-4 text-lg font-semibold">
+        <div className="mt-8 text-center">
+          <p
+            aria-live="polite"
+            className="mb-5 font-condensed text-3xl font-extrabold uppercase tracking-wide"
+          >
             {isRetaking
               ? `Retaking photo ${retakeIndex + 1}`
               : isComplete
@@ -193,7 +218,7 @@ function Booth() {
             />
           )}
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-4">
             {isBusy ? (
               <Button variant="secondary" onClick={handleCancel}>
                 Cancel
@@ -229,31 +254,35 @@ function Booth() {
       )}
 
       {isComplete && !isBusy && (
-        <div className="mt-4 flex justify-center">
-          <Button to="/review" size="lg">
-            See your photos
-            <ArrowRight size={20} aria-hidden="true" />
-          </Button>
+        <div className="mt-8 flex justify-center">
+          <ArrowButton to="/review">See your photos</ArrowButton>
         </div>
       )}
 
       {captureError && (
-        <p role="alert" className="mt-4 text-center text-red-600">
+        <p
+          role="alert"
+          className="mt-6 border-2 border-ink bg-blaze px-4 py-2 text-center font-condensed text-lg font-extrabold uppercase"
+        >
           {captureError}
         </p>
       )}
 
-      <section aria-labelledby="your-shots" className="mt-10">
-        <h2 id="your-shots" className="text-center text-2xl font-bold">
-          Your shots
-        </h2>
-        <ol className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section aria-labelledby="your-shots" className="mt-12">
+        <div className="flex items-center gap-4">
+          <h2 id="your-shots" className="text-4xl">
+            Your shots
+          </h2>
+          <div aria-hidden="true" className="checker h-4 flex-1" />
+        </div>
+
+        <ol className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {Array.from({ length: totalPhotos }, (_, index) => {
             const photo = photos[index]
             return (
               <li
                 key={index}
-                className="relative aspect-video overflow-hidden rounded-xl bg-white ring-1 ring-black/5"
+                className="relative aspect-video overflow-hidden border-2 border-ink bg-white shadow-hard-sm"
               >
                 {photo ? (
                   <>
@@ -276,7 +305,7 @@ function Booth() {
                     )}
                   </>
                 ) : (
-                  <div className="flex h-full items-center justify-center border-2 border-dashed border-brand-200 text-xl font-bold text-brand-300">
+                  <div className="flex h-full items-center justify-center bg-paper font-heading text-4xl text-ink/30">
                     {index + 1}
                   </div>
                 )}

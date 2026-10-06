@@ -12,9 +12,9 @@ function CountdownPicker({ options, selected, onSelect }: CountdownPickerProps) 
     <div
       role="group"
       aria-label="Countdown length"
-      className="mb-4 flex items-center justify-center gap-2"
+      className="mb-6 flex flex-wrap items-center justify-center gap-3"
     >
-      <span className="mr-1 font-semibold text-slate-700">Countdown</span>
+      <span className="field-label mr-1">Countdown</span>
       {options.map((seconds) => {
         const isSelected = seconds === selected
         return (
