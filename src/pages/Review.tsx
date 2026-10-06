@@ -1,13 +1,31 @@
 import { Camera, RotateCcw } from 'lucide-react'
 import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
+import AdjustmentSliders from '../components/editor/AdjustmentSliders'
 import FilterPicker from '../components/editor/FilterPicker'
 import Button from '../components/ui/Button'
+import { adjustmentControls } from '../data/adjustments'
 import { filters } from '../data/filters'
+import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useSession } from '../hooks/useSession'
+import { buildFilterCss } from '../utils/filterCss'
 
 function Review() {
-  const { layout, filter, selectFilter, photos, clearPhotos } = useSession()
+  const {
+    layout,
+    filter,
+    selectFilter,
+    adjustments,
+    setAdjustment,
+    resetAdjustments,
+    photos,
+    clearPhotos,
+  } = useSession()
+
+  // The cheap CSS preview uses this right away...
+  const filterCss = buildFilterCss(filter, adjustments)
+  // ...while the heavy canvas redraw waits until the sliders stop moving.
+  const finalFilterCss = useDebouncedValue(filterCss, 250)
 
   if (photos.length === 0) {
     return (
@@ -41,8 +59,17 @@ function Review() {
         />
       </div>
 
+      <div className="mt-6">
+        <AdjustmentSliders
+          controls={adjustmentControls}
+          values={adjustments}
+          onChange={setAdjustment}
+          onReset={resetAdjustments}
+        />
+      </div>
+
       <div className="mt-8">
-        <PhotoSheet layout={layout} photos={photos} filter={filter} />
+        <PhotoSheet layout={layout} photos={photos} filterCss={filterCss} />
       </div>
 
       <section aria-labelledby="final-image" className="mt-12">
@@ -52,7 +79,11 @@ function Review() {
         <p className="mb-4 mt-1 text-center text-sm text-slate-600">
           Drawn with the Canvas API. This is what you'll download.
         </p>
-        <ComposedPreview layout={layout} photos={photos} filter={filter} />
+        <ComposedPreview
+          layout={layout}
+          photos={photos}
+          filterCss={finalFilterCss}
+        />
       </section>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">

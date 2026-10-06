@@ -1,4 +1,3 @@
-import type { PhotoFilter } from '../types/filter'
 import type { PhotoLayout } from '../types/layout'
 
 // Sizes are in canvas pixels, not screen pixels.
@@ -57,7 +56,7 @@ function drawCover(
 export async function composeSheet(
   layout: PhotoLayout,
   photos: string[],
-  filter: PhotoFilter,
+  filterCss: string,
 ): Promise<HTMLCanvasElement> {
   const images = await Promise.all(
     photos.slice(0, layout.photoCount).map(loadImage),
@@ -95,7 +94,7 @@ export async function composeSheet(
     context.clip()
 
     if (image) {
-      context.filter = filter.css
+      context.filter = filterCss
       drawCover(context, image, x, y, CELL_WIDTH, CELL_HEIGHT)
     } else {
       context.fillStyle = PLACEHOLDER_COLOR

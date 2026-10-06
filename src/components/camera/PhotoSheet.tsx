@@ -1,14 +1,13 @@
-import type { PhotoFilter } from '../../types/filter'
 import type { PhotoLayout } from '../../types/layout'
 
 type PhotoSheetProps = {
   layout: PhotoLayout
   photos: string[]
-  filter: PhotoFilter
+  filterCss: string
 }
 
 // Arranges photos the way the chosen layout describes.
-function PhotoSheet({ layout, photos, filter }: PhotoSheetProps) {
+function PhotoSheet({ layout, photos, filterCss }: PhotoSheetProps) {
   return (
     <div
       className="mx-auto w-full rounded-2xl bg-white p-3 shadow-xl ring-1 ring-black/5"
@@ -30,7 +29,7 @@ function PhotoSheet({ layout, photos, filter }: PhotoSheetProps) {
                   src={photo}
                   alt={`Photo ${index + 1}`}
                   className="h-full w-full object-cover"
-                  style={{ filter: filter.css }}
+                  style={{ filter: filterCss }}
                 />
               ) : (
                 <div className="flex h-full items-center justify-center text-xl font-bold text-brand-300">

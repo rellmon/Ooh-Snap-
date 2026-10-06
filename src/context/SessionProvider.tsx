@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { DEFAULT_ADJUSTMENTS } from '../data/adjustments'
 import { defaultFilter, getFilterById } from '../data/filters'
 import { defaultLayout, getLayoutById } from '../data/layouts'
+import type { AdjustmentKey, Adjustments } from '../types/adjustments'
 import type { FilterId } from '../types/filter'
 import type { LayoutId } from '../types/layout'
 import { SessionContext } from './SessionContext'
@@ -12,6 +14,8 @@ type SessionProviderProps = {
 export function SessionProvider({ children }: SessionProviderProps) {
   const [layoutId, setLayoutId] = useState<LayoutId>(defaultLayout.id)
   const [filterId, setFilterId] = useState<FilterId>(defaultFilter.id)
+  const [adjustments, setAdjustments] =
+    useState<Adjustments>(DEFAULT_ADJUSTMENTS)
   const [photos, setPhotos] = useState<string[]>([])
 
   const layout = getLayoutById(layoutId)
@@ -45,6 +49,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   // Ends the current shoot: the photos go, and so do the edits made to them.
   const clearPhotos = useCallback(() => {
     setFilterId(defaultFilter.id)
+    setAdjustments(DEFAULT_ADJUSTMENTS)
     if (photosRef.current.length === 0) return
     photosRef.current.forEach((url) => URL.revokeObjectURL(url))
     updatePhotos([])
@@ -61,12 +66,24 @@ export function SessionProvider({ children }: SessionProviderProps) {
 
   const selectFilter = useCallback((id: FilterId) => setFilterId(id), [])
 
+  const setAdjustment = useCallback((key: AdjustmentKey, value: number) => {
+    setAdjustments((current) => ({ ...current, [key]: value }))
+  }, [])
+
+  const resetAdjustments = useCallback(
+    () => setAdjustments(DEFAULT_ADJUSTMENTS),
+    [],
+  )
+
   const value = useMemo(
     () => ({
       layout,
       selectLayout,
       filter,
       selectFilter,
+      adjustments,
+      setAdjustment,
+      resetAdjustments,
       photos,
       addPhoto,
       replacePhoto,
@@ -77,6 +94,9 @@ export function SessionProvider({ children }: SessionProviderProps) {
       selectLayout,
       filter,
       selectFilter,
+      adjustments,
+      setAdjustment,
+      resetAdjustments,
       photos,
       addPhoto,
       replacePhoto,
