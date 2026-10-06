@@ -18,14 +18,6 @@
   --shadow-hard-sm: 2px 2px 0 0 var(--color-ink);
   --shadow-hard: 4px 4px 0 0 var(--color-ink);
   --shadow-hard-lg: 6px 6px 0 0 var(--color-ink);
-
-  /* Legacy pink palette. Removed once every component is migrated. */
-  --color-brand-50: #fdf2f8;
-  --color-brand-100: #fce7f3;
-  --color-brand-200: #fbcfe8;
-  --color-brand-300: #f9a8d4;
-  --color-brand-600: #db2777;
-  --color-brand-700: #be185d;
 }
 
 /* Reusable styles for the labels above form controls. */

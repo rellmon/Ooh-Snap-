@@ -2,13 +2,27 @@ import Button from '../components/ui/Button'
 
 function NotFound() {
   return (
-    <section className="flex flex-col items-center justify-center px-6 py-24 text-center">
-      <p className="font-display text-7xl font-bold text-pink-600">404</p>
-      <h1 className="mt-4 text-3xl font-bold">Oops, this shot is out of frame.</h1>
-      <p className="mt-2 text-slate-600">
+    <section className="flex flex-col items-center overflow-x-clip px-6 py-20 text-center">
+      <div className="relative">
+        <div
+          aria-hidden="true"
+          className="dots absolute -left-10 -top-6 h-20 w-20"
+        />
+        <p className="relative -rotate-3 border-4 border-ink bg-sun px-8 py-2 font-heading text-[8rem] leading-none shadow-hard-lg sm:text-[11rem]">
+          404
+        </p>
+      </div>
+
+      <h1 className="mt-12 max-w-xl text-5xl leading-none sm:text-6xl">
+        Oops, this shot is out of frame.
+      </h1>
+      <p className="mt-4 text-lg">
         We couldn't find the page you were looking for.
       </p>
-      <Button to="/" className="mt-8">
+
+      <div aria-hidden="true" className="checker my-8 h-4 w-32" />
+
+      <Button to="/" size="lg">
         Back to home
       </Button>
     </section>
