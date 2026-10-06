@@ -10,9 +10,9 @@ import {
   FOOTER_HEIGHT,
   getCellRect,
   getSheetSize,
+  PLACEHOLDER_COLOR,
 } from './sheetMetrics'
 
-const PLACEHOLDER_COLOR = '#fce7f3'
 const FOOTER_FONT = `700 ${FOOTER_FONT_SIZE}px Fredoka, system-ui, sans-serif`
 
 function loadImage(url: string): Promise<HTMLImageElement> {

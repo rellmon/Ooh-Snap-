@@ -67,6 +67,14 @@
   );
 }
 
+
+/* A ring that stays visible on both light and dark photos. */
+@utility handle-ring {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
 @layer base {
   body {
     background-color: var(--color-paper);

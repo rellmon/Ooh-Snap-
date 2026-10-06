@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import NoPhotos from '../components/camera/NoPhotos'
 import PhotoSheet from '../components/camera/PhotoSheet'
 import AdjustmentSliders from '../components/editor/AdjustmentSliders'
@@ -7,6 +7,7 @@ import CaptionEditor from '../components/editor/CaptionEditor'
 import FilterPicker from '../components/editor/FilterPicker'
 import FramePicker from '../components/editor/FramePicker'
 import StickerPicker from '../components/editor/StickerPicker'
+import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
 import Tabs, { type TabItem } from '../components/ui/Tabs'
 import { adjustmentControls } from '../data/adjustments'
@@ -62,7 +63,7 @@ function Editor() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 pb-16">
-      <h1 className="pt-6 text-center text-4xl font-bold text-brand-600">
+      <h1 className="pt-6 text-center text-6xl leading-none sm:text-7xl">
         Make it yours
       </h1>
 
@@ -81,7 +82,7 @@ function Editor() {
             onMoveSticker={moveSticker}
           />
           {(stickers.length > 0 || caption.content.trim() !== '') && (
-            <p className="mt-3 text-center text-sm text-slate-600">
+            <p className="mt-4 text-center text-sm text-ink/70">
               Drag stickers and text to move them. On a keyboard, focus one and
               use the arrow keys (hold Shift for bigger steps).
             </p>
@@ -140,15 +141,12 @@ function Editor() {
         </div>
       </div>
 
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
+      <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
         <Button to="/review" variant="secondary" size="lg">
           <ArrowLeft size={18} aria-hidden="true" />
           Back to photos
         </Button>
-        <Button to="/final" size="lg">
-          Finish
-          <ArrowRight size={20} aria-hidden="true" />
-        </Button>
+        <ArrowButton to="/final">Finish</ArrowButton>
       </div>
     </div>
   )

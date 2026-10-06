@@ -69,7 +69,10 @@ function ComposedPreview({
 
   if (hasFailed) {
     return (
-      <p role="alert" className="text-center text-red-600">
+      <p
+        role="alert"
+        className="mx-auto max-w-md border-2 border-ink bg-blaze px-4 py-3 text-center font-condensed text-xl font-extrabold uppercase"
+      >
         We couldn't put your photo sheet together. Please go back and try again.
       </p>
     )
@@ -77,7 +80,10 @@ function ComposedPreview({
 
   if (!imageUrl) {
     return (
-      <p aria-live="polite" className="text-center text-slate-600">
+      <p
+        aria-live="polite"
+        className="mx-auto w-fit border-2 border-ink bg-sun px-4 py-2 font-condensed text-2xl font-extrabold uppercase tracking-wide shadow-hard motion-safe:animate-pulse"
+      >
         Developing your photo...
       </p>
     )
@@ -88,11 +94,11 @@ function ComposedPreview({
       <img
         src={imageUrl}
         alt="Your finished photo sheet"
-        className="mx-auto w-full rounded-2xl shadow-xl ring-1 ring-black/5"
+        className="mx-auto w-full border-2 border-ink shadow-hard-lg"
         style={{ maxWidth: `${layout.columns * 14}rem` }}
       />
 
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
         <Button size="lg" onClick={() => handleDownload('png')}>
           <Download size={20} aria-hidden="true" />
           Download PNG
@@ -108,7 +114,10 @@ function ComposedPreview({
       </div>
 
       {downloadError && (
-        <p role="alert" className="mt-4 text-center text-red-600">
+        <p
+          role="alert"
+          className="mx-auto mt-6 w-fit border-2 border-ink bg-blaze px-4 py-2 text-center font-condensed text-lg font-extrabold uppercase"
+        >
           {downloadError}
         </p>
       )}

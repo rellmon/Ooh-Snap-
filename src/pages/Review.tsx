@@ -1,6 +1,7 @@
-import { ArrowRight, Camera, RotateCcw } from 'lucide-react'
+import { Camera, RotateCcw } from 'lucide-react'
 import NoPhotos from '../components/camera/NoPhotos'
 import PhotoSheet from '../components/camera/PhotoSheet'
+import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
 import { DEFAULT_CAPTION } from '../data/caption'
 import { defaultFrame } from '../data/frames'
@@ -15,15 +16,15 @@ function Review() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
-      <h1 className="pt-6 text-center text-4xl font-bold text-brand-600">
+      <h1 className="pt-6 text-center text-6xl leading-none sm:text-7xl">
         How did we do?
       </h1>
-      <p className="mt-2 text-center text-slate-600">
+      <p className="mt-4 text-center text-lg">
         Your {layout.name}. Not happy with a shot? Go back to the booth and
         retake it.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-10">
         <PhotoSheet
           layout={layout}
           photos={photos}
@@ -34,7 +35,7 @@ function Review() {
         />
       </div>
 
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
+      <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
         <Button to="/booth" variant="secondary" size="lg">
           <Camera size={20} aria-hidden="true" />
           Back to the booth
@@ -43,10 +44,7 @@ function Review() {
           <RotateCcw size={18} aria-hidden="true" />
           Start over
         </Button>
-        <Button to="/editor" size="lg">
-          Edit your photo
-          <ArrowRight size={20} aria-hidden="true" />
-        </Button>
+        <ArrowButton to="/editor">Edit your photo</ArrowButton>
       </div>
     </div>
   )

@@ -32,12 +32,13 @@ function Final() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
-      <h1 className="pt-6 text-center text-4xl font-bold text-brand-600">
+      <h1 className="pt-6 text-center text-6xl leading-none sm:text-7xl">
         Your photo is ready!
       </h1>
-      <p className="mb-8 mt-2 text-center text-slate-600">
+      <p className="mt-4 text-center text-lg">
         Download it and share it with everyone.
       </p>
+      <div aria-hidden="true" className="checker mx-auto mb-10 mt-6 h-4 w-32" />
 
       <ComposedPreview
         layout={layout}
@@ -48,7 +49,7 @@ function Final() {
         caption={caption}
       />
 
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
+      <div className="mt-12 flex flex-wrap justify-center gap-4">
         <Button to="/editor" variant="secondary" size="lg">
           <ArrowLeft size={18} aria-hidden="true" />
           Back to editing

@@ -11,6 +11,7 @@ import {
   FOOTER_HEIGHT,
   getCellRect,
   getSheetSize,
+  PLACEHOLDER_COLOR,
 } from '../../utils/sheetMetrics'
 
 type PhotoSheetProps = {
@@ -148,9 +149,11 @@ function PhotoSheet({
       className="@container mx-auto w-full"
       style={{ maxWidth: `${layout.columns * 14}rem` }}
     >
+      {/* An outline, not a border: a border would shrink the inside slightly
+          and break the exact proportions the canvas copy relies on. */}
       <div
         ref={sheetRef}
-        className="relative w-full overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5"
+        className="relative w-full overflow-hidden shadow-hard-lg outline-2 outline-ink"
         style={{
           aspectRatio: `${sheet.width} / ${sheet.height}`,
           backgroundColor: frame.background,
@@ -163,13 +166,14 @@ function PhotoSheet({
           return (
             <div
               key={index}
-              className="absolute overflow-hidden bg-brand-100"
+              className="absolute overflow-hidden"
               style={{
                 left: percentX(cell.x),
                 top: percentY(cell.y),
                 width: percentX(cell.width),
                 height: percentY(cell.height),
                 borderRadius: scaled(CORNER_RADIUS),
+                backgroundColor: PLACEHOLDER_COLOR,
               }}
             >
               {photo ? (
@@ -181,7 +185,7 @@ function PhotoSheet({
                 />
               ) : (
                 <div
-                  className="flex h-full items-center justify-center font-bold text-brand-300"
+                  className="flex h-full items-center justify-center font-bold text-ink/30"
                   style={{ fontSize: scaled(48) }}
                 >
                   {index + 1}
@@ -217,7 +221,7 @@ function PhotoSheet({
             onKeyDown={(event) =>
               nudge(event, caption.x, caption.y, onMoveCaption)
             }
-            className="absolute cursor-grab select-none whitespace-nowrap rounded-lg px-[0.25em] leading-none hover:ring-2 hover:ring-brand-600/70 focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing"
+            className="absolute cursor-grab select-none whitespace-nowrap px-[0.25em] leading-none hover:handle-ring focus-visible:handle-ring active:cursor-grabbing"
             style={{
               left: `${caption.x * 100}%`,
               top: `${caption.y * 100}%`,
@@ -257,8 +261,8 @@ function PhotoSheet({
                   onMoveSticker(sticker.uid, x, y),
                 )
               }
-              className={`absolute cursor-grab select-none rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing ${
-                isSelected ? 'ring-2 ring-brand-600' : ''
+              className={`absolute cursor-grab select-none leading-none hover:handle-ring focus-visible:handle-ring active:cursor-grabbing ${
+                isSelected ? 'handle-ring' : ''
               }`}
               style={{
                 left: `${sticker.x * 100}%`,
