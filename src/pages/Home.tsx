@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowRight, Camera, Download, Sparkles } from 'lucide-react'
-import Button from '../components/ui/Button'
+import { motion, MotionConfig } from 'framer-motion'
+import { Camera, Download, Sparkles } from 'lucide-react'
+import PhotoStripArt from '../components/home/PhotoStripArt'
+import ArrowButton from '../components/ui/ArrowButton'
 import Card from '../components/ui/Card'
 import { useSession } from '../hooks/useSession'
 
@@ -23,12 +24,12 @@ const steps = [
   },
 ]
 
-const stripFrames = [
-  'from-pink-300 to-rose-400',
-  'from-amber-200 to-orange-300',
-  'from-sky-200 to-indigo-300',
-  'from-emerald-200 to-teal-300',
-]
+// The same fade-and-rise entrance, with a different delay for each piece.
+const rise = (delay: number) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4, delay },
+})
 
 function Home() {
   const { clearPhotos } = useSession()
@@ -39,100 +40,90 @@ function Home() {
   }, [clearPhotos])
 
   return (
-    <div className="mx-auto max-w-5xl px-6 pb-20">
-      <section className="grid items-center gap-12 py-12 md:grid-cols-2 md:py-20">
-        <div className="text-center md:text-left">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-6xl font-extrabold tracking-tight text-pink-600 sm:text-7xl"
-          >
-            Ooh Snap!
-          </motion.h1>
+    <MotionConfig reducedMotion="user">
+      <div className="mx-auto max-w-5xl overflow-x-clip px-6 pb-20">
+        <section className="grid grid-cols-1 items-center gap-12 py-10 md:grid-cols-2 md:py-16">
+          <div className="min-w-0">
+            <motion.h1
+              {...rise(0)}
+              className="text-[6.5rem] leading-[0.85] sm:text-[9rem]"
+            >
+              <span className="block">Ooh</span>
+              <span className="block">Snap!</span>
+            </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-4 text-2xl font-semibold text-slate-800"
-          >
-            Capture the chaos. Keep the memories.
-          </motion.p>
+            <motion.p
+              {...rise(0.1)}
+              className="mt-6 font-condensed text-3xl font-extrabold uppercase leading-tight sm:text-4xl"
+            >
+              Capture the chaos.
+              <br />
+              <span className="mt-1 inline-block bg-sun px-2">
+                Keep the memories.
+              </span>
+            </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-3 text-slate-600"
-          >
-            A photobooth that runs right in your browser. Your photos stay on
-            your device.
-          </motion.p>
+            <motion.p {...rise(0.2)} className="mt-5 max-w-md text-lg">
+              A photobooth that runs right in your browser. Your photos stay on
+              your device.
+            </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-8 inline-block"
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button to="/templates" size="lg">
-                Start the booth
-                <ArrowRight size={20} aria-hidden="true" />
-              </Button>
+            <motion.div
+              {...rise(0.3)}
+              className="mt-6 flex items-center gap-3"
+              aria-hidden="true"
+            >
+              <div className="checker h-4 w-14" />
+              <span className="border-2 border-ink bg-white px-2 font-condensed font-extrabold uppercase tracking-wide">
+                Pose. Snap. Repeat.
+              </span>
             </motion.div>
-          </motion.div>
-        </div>
 
-        <motion.div
-          aria-hidden="true"
-          initial={{ opacity: 0, y: 40, rotate: 0 }}
-          animate={{ opacity: 1, y: 0, rotate: 4 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto w-44 rounded-2xl bg-white p-3 shadow-2xl ring-1 ring-black/5"
-        >
-          <div className="space-y-3">
-            {stripFrames.map((gradient) => (
-              <div
-                key={gradient}
-                className={`flex aspect-[4/3] items-center justify-center rounded-lg bg-gradient-to-br ${gradient}`}
-              >
-                <Camera className="text-white/80" size={28} />
-              </div>
-            ))}
+            <motion.div {...rise(0.4)} className="mt-8">
+              <ArrowButton to="/templates">Start the booth</ArrowButton>
+            </motion.div>
           </div>
-          <p className="mt-3 text-center text-xs font-extrabold tracking-widest text-pink-600">
-            OOH SNAP!
-          </p>
-        </motion.div>
-      </section>
 
-      <section aria-labelledby="how-it-works">
-        <h2
-          id="how-it-works"
-          className="text-center text-3xl font-extrabold text-slate-900"
-        >
-          How it works
-        </h2>
+          <div className="min-w-0">
+            <PhotoStripArt />
+          </div>
+        </section>
 
-        <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-          {steps.map(({ icon: Icon, title, text }, index) => (
-            <li key={title}>
-              <Card className="h-full text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 text-pink-600">
-                  <Icon size={24} aria-hidden="true" />
-                </div>
-                <h3 className="mt-4 text-lg font-bold">
-                  {index + 1}. {title}
-                </h3>
-                <p className="mt-2 text-sm text-slate-600">{text}</p>
-              </Card>
-            </li>
-          ))}
-        </ol>
-      </section>
-    </div>
+        <section aria-labelledby="how-it-works" className="mt-6">
+          <div className="flex items-center gap-4">
+            <h2 id="how-it-works" className="text-5xl">
+              How it works
+            </h2>
+            <div aria-hidden="true" className="checker h-4 flex-1" />
+          </div>
+
+          <ol className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {steps.map(({ icon: Icon, title, text }, index) => (
+              <li key={title}>
+                <Card className="h-full">
+                  <div className="flex items-start justify-between">
+                    <span
+                      aria-hidden="true"
+                      className="font-heading text-6xl leading-none"
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="flex h-12 w-12 items-center justify-center border-2 border-ink bg-sun"
+                    >
+                      <Icon size={24} />
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-2xl">{title}</h3>
+                  <p className="mt-2">{text}</p>
+                </Card>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    </MotionConfig>
   )
 }
 
