@@ -1,5 +1,9 @@
 // Draws the current video frame onto a canvas and returns it as an image URL.
-export function capturePhoto(video: HTMLVideoElement): Promise<string> {
+// `mirror` flips the image, so the saved photo matches a mirrored preview.
+export function capturePhoto(
+  video: HTMLVideoElement,
+  mirror: boolean,
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const width = video.videoWidth
     const height = video.videoHeight
@@ -19,9 +23,10 @@ export function capturePhoto(video: HTMLVideoElement): Promise<string> {
       return
     }
 
-    // Mirror the image so the saved photo matches the mirrored preview.
-    context.translate(width, 0)
-    context.scale(-1, 1)
+    if (mirror) {
+      context.translate(width, 0)
+      context.scale(-1, 1)
+    }
     context.drawImage(video, 0, 0, width, height)
 
     canvas.toBlob(

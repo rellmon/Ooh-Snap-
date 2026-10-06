@@ -5,6 +5,7 @@ import {
   Camera,
   CameraOff,
   RotateCcw,
+  SwitchCamera,
   Timer,
 } from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
@@ -17,7 +18,16 @@ import { capturePhoto } from '../utils/capturePhoto'
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
 
 function Booth() {
-  const { videoRef, status, error, start, stop } = useCamera()
+  const {
+    videoRef,
+    status,
+    error,
+    facingMode,
+    canSwitch,
+    start,
+    stop,
+    switchCamera,
+  } = useCamera()
   const { layout, photos, addPhoto, replacePhoto, clearPhotos } = useSession()
   const totalPhotos = layout.photoCount
   const [isRunning, setIsRunning] = useState(false)
@@ -33,7 +43,7 @@ function Booth() {
     if (!videoRef.current) return
 
     try {
-      const url = await capturePhoto(videoRef.current)
+      const url = await capturePhoto(videoRef.current, facingMode === 'user')
 
       if (retakeIndex !== null) {
         replacePhoto(retakeIndex, url)
@@ -46,7 +56,7 @@ function Booth() {
       setIsRunning(false)
       setRetakeIndex(null)
     }
-  }, [videoRef, retakeIndex, addPhoto, replacePhoto])
+  }, [videoRef, facingMode, retakeIndex, addPhoto, replacePhoto])
 
   const { count, start: startCountdown, cancel } = useCountdown(3, handleSnap)
 
@@ -107,7 +117,9 @@ function Booth() {
           autoPlay
           playsInline
           muted
-          className="h-full w-full -scale-x-100 object-cover"
+          className={`h-full w-full object-cover ${
+            facingMode === 'user' ? '-scale-x-100' : ''
+          }`}
         />
 
         {status !== 'active' && (
@@ -123,7 +135,7 @@ function Booth() {
 
             {status === 'requesting' && (
               <>
-                <p>Waiting for your permission...</p>
+                <p>Starting the camera... Allow access if your browser asks.</p>
                 <Button disabled>Turn on camera</Button>
               </>
             )}
@@ -173,6 +185,12 @@ function Booth() {
                   <Button variant="secondary" size="lg" onClick={handleStartOver}>
                     <RotateCcw size={18} aria-hidden="true" />
                     Start over
+                  </Button>
+                )}
+                {canSwitch && (
+                  <Button variant="secondary" size="lg" onClick={switchCamera}>
+                    <SwitchCamera size={18} aria-hidden="true" />
+                    {facingMode === 'user' ? 'Use back camera' : 'Use front camera'}
                   </Button>
                 )}
                 <Button variant="secondary" size="lg" onClick={stop}>
