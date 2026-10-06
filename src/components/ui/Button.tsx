@@ -13,17 +13,17 @@ type ButtonProps = {
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'>
 
 const baseStyles =
-  'inline-flex items-center justify-center gap-2 rounded-full font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pink-600 disabled:cursor-not-allowed disabled:opacity-50'
+  'inline-flex items-center justify-center gap-2 border-2 border-ink font-condensed font-extrabold uppercase tracking-wide shadow-hard transition-[translate,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-hard-lg active:translate-x-1 active:translate-y-1 active:shadow-none focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
 
 const variantStyles: Record<Variant, string> = {
-  primary: 'bg-pink-600 text-white shadow-lg shadow-pink-600/30 hover:bg-pink-700',
-  secondary: 'bg-white text-pink-600 ring-1 ring-pink-200 hover:bg-pink-50',
+  primary: 'bg-sun text-ink',
+  secondary: 'bg-paper text-ink hover:bg-white',
 }
 
 const sizeStyles: Record<Size, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-6 py-3',
-  lg: 'px-8 py-4 text-lg',
+  sm: 'px-3 py-1 text-base',
+  md: 'px-5 py-2.5 text-lg',
+  lg: 'px-7 py-3.5 text-2xl',
 }
 
 function Button({

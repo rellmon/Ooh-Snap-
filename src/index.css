@@ -2,10 +2,24 @@
 
 @theme {
   /* Fonts */
+  /* Fredoka stays: the photo sheet footer on the exported image uses it. */
   --font-display: "Fredoka", ui-rounded, system-ui, sans-serif;
-  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Anton", Impact, "Arial Narrow", sans-serif;
+  --font-condensed: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;
 
-  /* Brand colors */
+  /* Brutalist palette */
+  --color-paper: #f6f2e8;
+  --color-ink: #0b0b0b;
+  --color-sun: #ffc20e;
+  --color-blaze: #ff5a14;
+
+  /* Hard shadows: no blur, just a solid offset */
+  --shadow-hard-sm: 2px 2px 0 0 var(--color-ink);
+  --shadow-hard: 4px 4px 0 0 var(--color-ink);
+  --shadow-hard-lg: 6px 6px 0 0 var(--color-ink);
+
+  /* Legacy pink palette. Removed once every component is migrated. */
   --color-brand-50: #fdf2f8;
   --color-brand-100: #fce7f3;
   --color-brand-200: #fbcfe8;
@@ -15,9 +29,25 @@
 }
 
 @layer base {
-  h1,
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  h1 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    /* Anton has one weight. This stops the browser from faking a bold one. */
+    font-synthesis-weight: none;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+
   h2,
   h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-condensed);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 }

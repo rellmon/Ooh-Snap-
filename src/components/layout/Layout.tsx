@@ -2,11 +2,11 @@ import { Link, Outlet } from 'react-router-dom'
 
 function Layout() {
   return (
-    <div    className="font-display rounded-lg text-2xl font-extrabold tracking-tight text-pink-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pink-600">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
       <header className="px-6 py-4">
         <Link
           to="/"
-          className="rounded-lg text-2xl font-extrabold tracking-tight text-pink-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pink-600"
+          className="rounded-lg font-display text-2xl font-extrabold tracking-tight text-brand-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600"
         >
           Ooh Snap!
         </Link>
