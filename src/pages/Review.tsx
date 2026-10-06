@@ -1,4 +1,5 @@
 import { Camera, RotateCcw } from 'lucide-react'
+import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
 import Button from '../components/ui/Button'
 import { useSession } from '../hooks/useSession'
@@ -33,6 +34,16 @@ function Review() {
       <div className="mt-8">
         <PhotoSheet layout={layout} photos={photos} />
       </div>
+
+      <section aria-labelledby="final-image" className="mt-12">
+        <h2 id="final-image" className="text-center text-2xl font-bold">
+          Final image
+        </h2>
+        <p className="mb-4 mt-1 text-center text-sm text-slate-600">
+          Drawn with the Canvas API. This is what you'll download.
+        </p>
+        <ComposedPreview layout={layout} photos={photos} />
+      </section>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button to="/booth" size="lg">
