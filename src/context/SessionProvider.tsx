@@ -104,6 +104,14 @@ export function SessionProvider({ children }: SessionProviderProps) {
 
   const clearStickers = useCallback(() => setStickers([]), [])
 
+  const moveSticker = useCallback((uid: string, x: number, y: number) => {
+    setStickers((current) =>
+      current.map((sticker) =>
+        sticker.uid === uid ? { ...sticker, x, y } : sticker,
+      ),
+    )
+  }, [])
+
   const value = useMemo(
     () => ({
       layout,
@@ -119,6 +127,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       addSticker,
       removeSticker,
       clearStickers,
+      moveSticker,
       photos,
       addPhoto,
       replacePhoto,
@@ -138,6 +147,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       addSticker,
       removeSticker,
       clearStickers,
+      moveSticker,
       photos,
       addPhoto,
       replacePhoto,

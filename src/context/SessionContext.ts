@@ -18,6 +18,7 @@ export type SessionContextValue = {
   stickers: PlacedSticker[]
   addSticker: (emoji: string) => void
   removeSticker: (uid: string) => void
+  moveSticker: (uid: string, x: number, y: number) => void
   clearStickers: () => void
   photos: string[]
   addPhoto: (url: string) => void

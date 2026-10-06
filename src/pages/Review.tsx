@@ -28,14 +28,16 @@ function Review() {
     addSticker,
     removeSticker,
     clearStickers,
+    moveSticker,
     photos,
     clearPhotos,
   } = useSession()
 
-  // The cheap CSS preview uses this right away...
+  // The cheap CSS preview uses these right away...
   const filterCss = buildFilterCss(filter, adjustments)
-  // ...while the heavy canvas redraw waits until the sliders stop moving.
+  // ...while the heavy canvas redraw waits until dragging or sliding stops.
   const finalFilterCss = useDebouncedValue(filterCss, 250)
+  const finalStickers = useDebouncedValue(stickers, 250)
 
   if (photos.length === 0) {
     return (
@@ -103,7 +105,14 @@ function Review() {
           filterCss={filterCss}
           frame={frame}
           stickers={stickers}
+          onMoveSticker={moveSticker}
         />
+        {stickers.length > 0 && (
+          <p className="mt-3 text-center text-sm text-slate-600">
+            Drag a sticker to move it. On a keyboard, focus one and use the
+            arrow keys (hold Shift for bigger steps).
+          </p>
+        )}
       </div>
 
       <section aria-labelledby="final-image" className="mt-12">
@@ -118,7 +127,7 @@ function Review() {
           photos={photos}
           filterCss={finalFilterCss}
           frame={frame}
-          stickers={stickers}
+          stickers={finalStickers}
         />
       </section>
 
