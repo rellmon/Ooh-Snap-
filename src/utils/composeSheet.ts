@@ -1,3 +1,4 @@
+import type { PhotoFrame } from '../types/frame'
 import type { PhotoLayout } from '../types/layout'
 
 // Sizes are in canvas pixels, not screen pixels.
@@ -8,9 +9,7 @@ const GAP = 24
 const FOOTER_HEIGHT = 120
 const CORNER_RADIUS = 20
 
-const BACKGROUND_COLOR = '#ffffff'
 const PLACEHOLDER_COLOR = '#fce7f3'
-const BRAND_COLOR = '#db2777'
 const FOOTER_FONT = '700 56px Fredoka, system-ui, sans-serif'
 
 function loadImage(url: string): Promise<HTMLImageElement> {
@@ -57,6 +56,7 @@ export async function composeSheet(
   layout: PhotoLayout,
   photos: string[],
   filterCss: string,
+  frame: PhotoFrame,
 ): Promise<HTMLCanvasElement> {
   const images = await Promise.all(
     photos.slice(0, layout.photoCount).map(loadImage),
@@ -78,7 +78,7 @@ export async function composeSheet(
     throw new Error('Canvas is not supported.')
   }
 
-  context.fillStyle = BACKGROUND_COLOR
+  context.fillStyle = frame.background
   context.fillRect(0, 0, canvas.width, canvas.height)
 
   for (let index = 0; index < layout.photoCount; index++) {
@@ -104,7 +104,7 @@ export async function composeSheet(
     context.restore()
   }
 
-  context.fillStyle = BRAND_COLOR
+  context.fillStyle = frame.textColor
   context.font = FOOTER_FONT
   context.textAlign = 'center'
   context.textBaseline = 'middle'

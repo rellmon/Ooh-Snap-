@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import type { AdjustmentKey, Adjustments } from '../types/adjustments'
 import type { FilterId, PhotoFilter } from '../types/filter'
+import type { FrameId, PhotoFrame } from '../types/frame'
 import type { LayoutId, PhotoLayout } from '../types/layout'
 
 export type SessionContextValue = {
@@ -11,6 +12,8 @@ export type SessionContextValue = {
   adjustments: Adjustments
   setAdjustment: (key: AdjustmentKey, value: number) => void
   resetAdjustments: () => void
+  frame: PhotoFrame
+  selectFrame: (id: FrameId) => void
   photos: string[]
   addPhoto: (url: string) => void
   replacePhoto: (index: number, url: string) => void

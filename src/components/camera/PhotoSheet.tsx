@@ -1,17 +1,22 @@
+import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
 
 type PhotoSheetProps = {
   layout: PhotoLayout
   photos: string[]
   filterCss: string
+  frame: PhotoFrame
 }
 
 // Arranges photos the way the chosen layout describes.
-function PhotoSheet({ layout, photos, filterCss }: PhotoSheetProps) {
+function PhotoSheet({ layout, photos, filterCss, frame }: PhotoSheetProps) {
   return (
     <div
-      className="mx-auto w-full rounded-2xl bg-white p-3 shadow-xl ring-1 ring-black/5"
-      style={{ maxWidth: `${layout.columns * 14}rem` }}
+      className="mx-auto w-full rounded-2xl p-3 shadow-xl ring-1 ring-black/5"
+      style={{
+        maxWidth: `${layout.columns * 14}rem`,
+        backgroundColor: frame.background,
+      }}
     >
       <ol
         className="grid gap-2"
@@ -41,7 +46,10 @@ function PhotoSheet({ layout, photos, filterCss }: PhotoSheetProps) {
         })}
       </ol>
 
-      <p className="mt-3 text-center font-display text-sm font-bold tracking-widest text-brand-600">
+      <p
+        className="mt-3 text-center font-display text-sm font-bold tracking-widest"
+        style={{ color: frame.textColor }}
+      >
         OOH SNAP!
       </p>
     </div>

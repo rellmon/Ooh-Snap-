@@ -3,9 +3,11 @@ import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
 import AdjustmentSliders from '../components/editor/AdjustmentSliders'
 import FilterPicker from '../components/editor/FilterPicker'
+import FramePicker from '../components/editor/FramePicker'
 import Button from '../components/ui/Button'
 import { adjustmentControls } from '../data/adjustments'
 import { filters } from '../data/filters'
+import { frames } from '../data/frames'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useSession } from '../hooks/useSession'
 import { buildFilterCss } from '../utils/filterCss'
@@ -18,6 +20,8 @@ function Review() {
     adjustments,
     setAdjustment,
     resetAdjustments,
+    frame,
+    selectFrame,
     photos,
     clearPhotos,
   } = useSession()
@@ -68,8 +72,21 @@ function Review() {
         />
       </div>
 
+      <div className="mt-6">
+        <FramePicker
+          frames={frames}
+          selectedId={frame.id}
+          onSelect={selectFrame}
+        />
+      </div>
+
       <div className="mt-8">
-        <PhotoSheet layout={layout} photos={photos} filterCss={filterCss} />
+        <PhotoSheet
+          layout={layout}
+          photos={photos}
+          filterCss={filterCss}
+          frame={frame}
+        />
       </div>
 
       <section aria-labelledby="final-image" className="mt-12">
@@ -83,6 +100,7 @@ function Review() {
           layout={layout}
           photos={photos}
           filterCss={finalFilterCss}
+          frame={frame}
         />
       </section>
 
