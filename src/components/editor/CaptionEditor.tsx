@@ -1,4 +1,9 @@
-import { captionColors, MAX_CAPTION_LENGTH } from '../../data/caption'
+import {
+  captionColors,
+  MAX_CAPTION_LENGTH,
+  MAX_CAPTION_SIZE,
+  MIN_CAPTION_SIZE,
+} from '../../data/caption'
 import type { TextCaption } from '../../types/caption'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
@@ -9,6 +14,8 @@ type CaptionEditorProps = {
 }
 
 function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
+  const hasText = caption.content.trim() !== ''
+
   return (
     <Card className="mx-auto max-w-md space-y-4">
       <h2 className="text-center text-lg font-bold">Text</h2>
@@ -60,6 +67,31 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
           })}
         </div>
       </div>
+
+      {hasText && (
+        <div>
+          <div className="flex items-center justify-between">
+            <label htmlFor="caption-size" className="font-semibold">
+              Size
+            </label>
+            <span className="text-sm text-slate-600">
+              {Math.round(caption.size * 100)}%
+            </span>
+          </div>
+          <input
+            id="caption-size"
+            type="range"
+            min={Math.round(MIN_CAPTION_SIZE * 100)}
+            max={Math.round(MAX_CAPTION_SIZE * 100)}
+            step={1}
+            value={Math.round(caption.size * 100)}
+            onChange={(event) =>
+              onChange({ size: Number(event.target.value) / 100 })
+            }
+            className="mt-2 w-full accent-brand-600"
+          />
+        </div>
+      )}
 
       <div className="flex justify-center">
         <Button

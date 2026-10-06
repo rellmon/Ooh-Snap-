@@ -18,6 +18,7 @@ type PhotoSheetProps = {
   filterCss: string
   frame: PhotoFrame
   caption: TextCaption
+  onMoveCaption: (x: number, y: number) => void
   stickers: PlacedSticker[]
   selectedUid: string | null
   onSelectSticker: (uid: string) => void
@@ -25,11 +26,16 @@ type PhotoSheetProps = {
 }
 
 type DragState = {
-  uid: string
-  // Distance between the pointer and the sticker's center when the drag began.
+  // Which thing is being dragged: a sticker's uid, or CAPTION_ID.
+  id: string
+  // Distance between the pointer and the item's center when the drag began.
   offsetX: number
   offsetY: number
 }
+
+type MoveHandler = (x: number, y: number) => void
+
+const CAPTION_ID = 'caption'
 
 // Keeps a position inside the sheet (0 to 1).
 function clamp01(value: number): number {
@@ -50,6 +56,7 @@ function PhotoSheet({
   filterCss,
   frame,
   caption,
+  onMoveCaption,
   stickers,
   selectedUid,
   onSelectSticker,
@@ -76,56 +83,58 @@ function PhotoSheet({
     }
   }
 
-  function handlePointerDown(
+  // The drag helpers below work for any item, so stickers and the caption share them.
+  function startDrag(
     event: PointerEvent<HTMLButtonElement>,
-    sticker: PlacedSticker,
+    id: string,
+    x: number,
+    y: number,
   ) {
-    onSelectSticker(sticker.uid)
-
     const pointer = getPointerFraction(event)
     if (!pointer) return
 
-    // Keep receiving move events even if the pointer leaves the sticker.
+    // Keep receiving move events even if the pointer leaves the item.
     event.currentTarget.setPointerCapture(event.pointerId)
     dragRef.current = {
-      uid: sticker.uid,
-      offsetX: sticker.x - pointer.x,
-      offsetY: sticker.y - pointer.y,
+      id,
+      offsetX: x - pointer.x,
+      offsetY: y - pointer.y,
     }
   }
 
-  function handlePointerMove(
+  function continueDrag(
     event: PointerEvent<HTMLButtonElement>,
-    sticker: PlacedSticker,
+    id: string,
+    onMove: MoveHandler,
   ) {
     const drag = dragRef.current
     const pointer = getPointerFraction(event)
-    if (!drag || drag.uid !== sticker.uid || !pointer) return
+    if (!drag || drag.id !== id || !pointer) return
 
-    onMoveSticker(
-      sticker.uid,
+    onMove(
       clamp01(pointer.x + drag.offsetX),
       clamp01(pointer.y + drag.offsetY),
     )
   }
 
-  function handlePointerEnd() {
+  function endDrag() {
     dragRef.current = null
   }
 
-  function handleKeyDown(
+  function nudge(
     event: KeyboardEvent<HTMLButtonElement>,
-    sticker: PlacedSticker,
+    x: number,
+    y: number,
+    onMove: MoveHandler,
   ) {
     const direction = ARROW_MOVES[event.key]
     if (!direction) return
 
     event.preventDefault()
     const step = event.shiftKey ? 0.05 : 0.01
-    onMoveSticker(
-      sticker.uid,
-      clamp01(sticker.x + direction[0] * step),
-      clamp01(sticker.y + direction[1] * step),
+    onMove(
+      clamp01(x + direction[0] * step),
+      clamp01(y + direction[1] * step),
     )
   }
 
@@ -189,19 +198,32 @@ function PhotoSheet({
         </p>
 
         {caption.content.trim() !== '' && (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute whitespace-nowrap font-display font-bold leading-none"
+          <button
+            type="button"
+            aria-label={`Caption: ${caption.content}. Drag it, or use the arrow keys, to move it.`}
+            onPointerDown={(event) =>
+              startDrag(event, CAPTION_ID, caption.x, caption.y)
+            }
+            onPointerMove={(event) =>
+              continueDrag(event, CAPTION_ID, onMoveCaption)
+            }
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onKeyDown={(event) =>
+              nudge(event, caption.x, caption.y, onMoveCaption)
+            }
+            className="absolute cursor-grab select-none whitespace-nowrap rounded-lg px-[0.25em] font-display font-bold leading-none hover:ring-2 hover:ring-brand-600/70 focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing"
             style={{
               left: `${caption.x * 100}%`,
               top: `${caption.y * 100}%`,
               transform: 'translate(-50%, -50%)',
               fontSize: `${caption.size * 100}cqw`,
               color: caption.color,
+              touchAction: 'none',
             }}
           >
             {caption.content}
-          </span>
+          </button>
         )}
 
         {stickers.map((sticker, index) => {
@@ -211,12 +233,23 @@ function PhotoSheet({
               key={sticker.uid}
               type="button"
               aria-label={`Sticker ${index + 1}${isSelected ? ', selected' : ''}. Drag it, or use the arrow keys, to move it.`}
-              onPointerDown={(event) => handlePointerDown(event, sticker)}
-              onPointerMove={(event) => handlePointerMove(event, sticker)}
-              onPointerUp={handlePointerEnd}
-              onPointerCancel={handlePointerEnd}
+              onPointerDown={(event) => {
+                onSelectSticker(sticker.uid)
+                startDrag(event, sticker.uid, sticker.x, sticker.y)
+              }}
+              onPointerMove={(event) =>
+                continueDrag(event, sticker.uid, (x, y) =>
+                  onMoveSticker(sticker.uid, x, y),
+                )
+              }
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
               onFocus={() => onSelectSticker(sticker.uid)}
-              onKeyDown={(event) => handleKeyDown(event, sticker)}
+              onKeyDown={(event) =>
+                nudge(event, sticker.x, sticker.y, (x, y) =>
+                  onMoveSticker(sticker.uid, x, y),
+                )
+              }
               className={`absolute cursor-grab select-none rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing ${
                 isSelected ? 'ring-2 ring-brand-600' : ''
               }`}

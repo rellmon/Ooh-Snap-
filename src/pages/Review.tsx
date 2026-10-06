@@ -124,16 +124,16 @@ function Review() {
           filterCss={filterCss}
           frame={frame}
           caption={caption}
+          onMoveCaption={(x, y) => updateCaption({ x, y })}
           stickers={stickers}
           selectedUid={selectedSticker?.uid ?? null}
           onSelectSticker={setSelectedUid}
           onMoveSticker={moveSticker}
         />
-        {stickers.length > 0 && (
+        {(stickers.length > 0 || caption.content.trim() !== '') && (
           <p className="mt-3 text-center text-sm text-slate-600">
-            Drag a sticker to move it, or select it to change its size. On a
-            keyboard, focus one and use the arrow keys (hold Shift for bigger
-            steps).
+            Drag stickers and text to move them. On a keyboard, focus one and
+            use the arrow keys (hold Shift for bigger steps).
           </p>
         )}
       </div>

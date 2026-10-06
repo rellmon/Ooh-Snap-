@@ -3,6 +3,10 @@ import type { TextCaption } from '../types/caption'
 // Keeps the text on one line and inside the sheet.
 export const MAX_CAPTION_LENGTH = 20
 
+// Font sizes are fractions of the sheet's width.
+export const MIN_CAPTION_SIZE = 0.04
+export const MAX_CAPTION_SIZE = 0.12
+
 export const DEFAULT_CAPTION: TextCaption = {
   content: '',
   color: '#ffffff',
