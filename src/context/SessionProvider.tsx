@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { defaultLayout, getLayoutById } from '../data/layouts'
+import type { LayoutId } from '../types/layout'
 import { SessionContext } from './SessionContext'
 
 type SessionProviderProps = {
@@ -6,7 +8,10 @@ type SessionProviderProps = {
 }
 
 export function SessionProvider({ children }: SessionProviderProps) {
+  const [layoutId, setLayoutId] = useState<LayoutId>(defaultLayout.id)
   const [photos, setPhotos] = useState<string[]>([])
+
+  const layout = getLayoutById(layoutId)
 
   // The ref always holds the newest list, so we can safely read it
   // when freeing memory. State is what makes the screen update.
@@ -39,9 +44,18 @@ export function SessionProvider({ children }: SessionProviderProps) {
     updatePhotos([])
   }, [updatePhotos])
 
+  // Photos taken for one layout don't belong to another, so switching clears them.
+  const selectLayout = useCallback(
+    (id: LayoutId) => {
+      clearPhotos()
+      setLayoutId(id)
+    },
+    [clearPhotos],
+  )
+
   const value = useMemo(
-    () => ({ photos, addPhoto, replacePhoto, clearPhotos }),
-    [photos, addPhoto, replacePhoto, clearPhotos],
+    () => ({ layout, selectLayout, photos, addPhoto, replacePhoto, clearPhotos }),
+    [layout, selectLayout, photos, addPhoto, replacePhoto, clearPhotos],
   )
 
   return (

@@ -14,18 +14,17 @@ import { useCountdown } from '../hooks/useCountdown'
 import { useSession } from '../hooks/useSession'
 import { capturePhoto } from '../utils/capturePhoto'
 
-// Later, the selected layout will decide this number.
-const TOTAL_PHOTOS = 4
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
 
 function Booth() {
   const { videoRef, status, error, start, stop } = useCamera()
-  const { photos, addPhoto, replacePhoto, clearPhotos } = useSession()
+  const { layout, photos, addPhoto, replacePhoto, clearPhotos } = useSession()
+  const totalPhotos = layout.photoCount
   const [isRunning, setIsRunning] = useState(false)
   const [retakeIndex, setRetakeIndex] = useState<number | null>(null)
   const [captureError, setCaptureError] = useState<string | null>(null)
 
-  const isComplete = photos.length >= TOTAL_PHOTOS
+  const isComplete = photos.length >= totalPhotos
   const isSessionActive = isRunning && !isComplete
   const isRetaking = retakeIndex !== null
   const isBusy = isSessionActive || isRetaking
@@ -88,7 +87,7 @@ function Booth() {
   return (
     <div className="mx-auto max-w-4xl px-6 pb-16">
       <div className="py-4">
-        <Button to="/" variant="secondary">
+        <Button to="/templates" variant="secondary">
           <ArrowLeft size={18} aria-hidden="true" />
           Back
         </Button>
@@ -97,6 +96,7 @@ function Booth() {
       <h1 className="text-center text-4xl font-bold text-brand-600">
         The Booth
       </h1>
+      <p className="mt-1 text-center text-slate-600">Layout: {layout.name}</p>
 
       <section
         aria-label="Camera stage"
@@ -150,10 +150,10 @@ function Booth() {
             {isRetaking
               ? `Retaking photo ${retakeIndex + 1}`
               : isComplete
-                ? `All ${TOTAL_PHOTOS} photos taken!`
+                ? `All ${totalPhotos} photos taken!`
                 : isSessionActive
-                  ? `Photo ${photos.length + 1} of ${TOTAL_PHOTOS}`
-                  : `${photos.length} of ${TOTAL_PHOTOS} photos taken`}
+                  ? `Photo ${photos.length + 1} of ${totalPhotos}`
+                  : `${photos.length} of ${totalPhotos} photos taken`}
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">
@@ -205,7 +205,7 @@ function Booth() {
           Your shots
         </h2>
         <ol className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {Array.from({ length: TOTAL_PHOTOS }, (_, index) => {
+          {Array.from({ length: totalPhotos }, (_, index) => {
             const photo = photos[index]
             return (
               <li

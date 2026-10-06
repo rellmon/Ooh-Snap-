@@ -77,7 +77,7 @@ function Home() {
             className="mt-8 inline-block"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button to="/booth" size="lg">
+              <Button to="/templates" size="lg">
                 Start the booth
                 <ArrowRight size={20} aria-hidden="true" />
               </Button>

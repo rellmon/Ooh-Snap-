@@ -4,12 +4,14 @@ import Booth from './pages/Booth'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Review from './pages/Review'
+import Templates from './pages/Templates'
 
 function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/templates" element={<Templates />} />
         <Route path="/booth" element={<Booth />} />
         <Route path="/review" element={<Review />} />
         <Route path="*" element={<NotFound />} />
