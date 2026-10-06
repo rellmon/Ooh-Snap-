@@ -43,6 +43,30 @@
   font-weight: 700;
 }
 
+/* Decorative patterns. Use them on empty, aria-hidden elements. */
+@utility dots {
+  background-image: radial-gradient(var(--color-ink) 1.5px, transparent 1.6px);
+  background-size: 10px 10px;
+}
+
+@utility checker {
+  background-image: conic-gradient(
+    var(--color-ink) 0 25%,
+    transparent 0 50%,
+    var(--color-ink) 0 75%,
+    transparent 0 100%
+  );
+  background-size: 16px 16px;
+}
+
+@utility hazard-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-ink) 0 12px,
+    var(--color-paper) 12px 24px
+  );
+}
+
 @layer base {
   body {
     background-color: var(--color-paper);
