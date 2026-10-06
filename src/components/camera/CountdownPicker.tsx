@@ -12,7 +12,7 @@ function CountdownPicker({ options, selected, onSelect }: CountdownPickerProps) 
     <div
       role="group"
       aria-label="Countdown length"
-      className="mb-6 flex flex-wrap items-center justify-center gap-3"
+      className="flex flex-wrap items-center justify-center gap-3"
     >
       <span className="field-label mr-1">Countdown</span>
       {options.map((seconds) => {

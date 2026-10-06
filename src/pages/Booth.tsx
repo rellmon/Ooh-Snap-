@@ -8,20 +8,26 @@ import {
   Timer,
 } from 'lucide-react'
 import Countdown from '../components/camera/Countdown'
+import CaptureFlash from '../components/camera/CaptureFlash'
 import CountdownPicker from '../components/camera/CountdownPicker'
+import SoundToggle from '../components/camera/SoundToggle'
 import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
 import {
   COUNTDOWN_STORAGE_KEY,
   countdownOptions,
   DEFAULT_COUNTDOWN_SECONDS,
+  DEFAULT_SOUND_ENABLED,
+  isBoolean,
   isCountdownSeconds,
+  SOUND_STORAGE_KEY,
 } from '../data/settings'
 import { useCamera } from '../hooks/useCamera'
 import { useCountdown } from '../hooks/useCountdown'
 import { usePersistentState } from '../hooks/usePersistentState'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { useSession } from '../hooks/useSession'
+import { useShutterSound } from '../hooks/useShutterSound'
 import { capturePhoto } from '../utils/capturePhoto'
 
 const PAUSE_BETWEEN_PHOTOS_MS = 1000
@@ -45,6 +51,13 @@ function Booth() {
     DEFAULT_COUNTDOWN_SECONDS,
     isCountdownSeconds,
   )
+  const [soundEnabled, setSoundEnabled] = usePersistentState(
+    SOUND_STORAGE_KEY,
+    DEFAULT_SOUND_ENABLED,
+    isBoolean,
+  )
+  const { unlock, play: playShutter } = useShutterSound(soundEnabled)
+  const [flashKey, setFlashKey] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [retakeIndex, setRetakeIndex] = useState<number | null>(null)
   const [captureError, setCaptureError] = useState<string | null>(null)
@@ -59,6 +72,8 @@ function Booth() {
 
     try {
       const url = await capturePhoto(videoRef.current, facingMode === 'user')
+      playShutter()
+      setFlashKey((key) => key + 1)
 
       if (retakeIndex !== null) {
         replacePhoto(retakeIndex, url)
@@ -71,7 +86,7 @@ function Booth() {
       setIsRunning(false)
       setRetakeIndex(null)
     }
-  }, [videoRef, facingMode, retakeIndex, addPhoto, replacePhoto])
+  }, [videoRef, facingMode, retakeIndex, addPhoto, replacePhoto, playShutter])
 
   const {
     count,
@@ -88,12 +103,14 @@ function Booth() {
   }, [isSessionActive, count, startCountdown])
 
   function handleStart() {
+    unlock()
     setCaptureError(null)
     setIsRunning(true)
     startCountdown()
   }
 
   function handleRetake(index: number) {
+    unlock()
     setCaptureError(null)
     setRetakeIndex(index)
     startCountdown()
@@ -195,6 +212,7 @@ function Booth() {
         )}
 
         <Countdown count={count} />
+        <CaptureFlash flashKey={flashKey} />
       </section>
 
       {status === 'active' && (
@@ -213,11 +231,20 @@ function Booth() {
           </p>
 
           {!isBusy && (
-            <CountdownPicker
-              options={countdownOptions}
-              selected={countdownSeconds}
-              onSelect={setCountdownSeconds}
-            />
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+              <CountdownPicker
+                options={countdownOptions}
+                selected={countdownSeconds}
+                onSelect={setCountdownSeconds}
+              />
+              <SoundToggle
+                enabled={soundEnabled}
+                onToggle={() => {
+                  unlock()
+                  setSoundEnabled(!soundEnabled)
+                }}
+              />
+            </div>
           )}
 
           <div className="flex flex-wrap justify-center gap-4">

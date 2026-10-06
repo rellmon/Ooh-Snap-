@@ -12,3 +12,11 @@ export const COUNTDOWN_STORAGE_KEY = 'ooh-snap:countdown-seconds'
 export function isCountdownSeconds(value: unknown): value is CountdownSeconds {
   return countdownOptions.some((option) => option === value)
 }
+
+export const SOUND_STORAGE_KEY = 'ooh-snap:shutter-sound'
+
+export const DEFAULT_SOUND_ENABLED: boolean = true
+
+export function isBoolean(value: unknown): value is boolean {
+  return typeof value === 'boolean'
+}
