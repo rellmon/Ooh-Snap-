@@ -1,4 +1,11 @@
-export type FilterId = 'original' | 'grayscale'
+export type FilterId =
+  | 'original'
+  | 'grayscale'
+  | 'vintage'
+  | 'warm'
+  | 'cool'
+  | 'bright'
+  | 'high-contrast'
 
 export type PhotoFilter = {
   id: FilterId
