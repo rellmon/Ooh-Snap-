@@ -19,11 +19,12 @@ type PhotoSheetProps = {
   filterCss: string
   frame: PhotoFrame
   caption: TextCaption
-  onMoveCaption: (x: number, y: number) => void
   stickers: PlacedSticker[]
-  selectedUid: string | null
-  onSelectSticker: (uid: string) => void
-  onMoveSticker: (uid: string, x: number, y: number) => void
+  // The editing props are optional: without them the sheet is view-only.
+  onMoveCaption?: (x: number, y: number) => void
+  selectedUid?: string | null
+  onSelectSticker?: (uid: string) => void
+  onMoveSticker?: (uid: string, x: number, y: number) => void
 }
 
 type DragState = {
@@ -37,6 +38,8 @@ type DragState = {
 type MoveHandler = (x: number, y: number) => void
 
 const CAPTION_ID = 'caption'
+
+const doNothing = () => {}
 
 // Keeps a position inside the sheet (0 to 1).
 function clamp01(value: number): number {
@@ -57,11 +60,11 @@ function PhotoSheet({
   filterCss,
   frame,
   caption,
-  onMoveCaption,
   stickers,
-  selectedUid,
-  onSelectSticker,
-  onMoveSticker,
+  onMoveCaption = doNothing,
+  selectedUid = null,
+  onSelectSticker = doNothing,
+  onMoveSticker = doNothing,
 }: PhotoSheetProps) {
   const sheet = getSheetSize(layout)
   const sheetRef = useRef<HTMLDivElement>(null)

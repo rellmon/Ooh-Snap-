@@ -1,6 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Booth from './pages/Booth'
+import Editor from './pages/Editor'
+import Final from './pages/Final'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Review from './pages/Review'
@@ -14,6 +16,8 @@ function App() {
         <Route path="/templates" element={<Templates />} />
         <Route path="/booth" element={<Booth />} />
         <Route path="/review" element={<Review />} />
+        <Route path="/editor" element={<Editor />} />
+        <Route path="/final" element={<Final />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
