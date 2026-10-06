@@ -1,4 +1,4 @@
-export type LayoutId = 'classic-strip'
+export type LayoutId = 'classic-strip' | 'grid-2x2'
 
 export type PhotoLayout = {
   id: LayoutId
