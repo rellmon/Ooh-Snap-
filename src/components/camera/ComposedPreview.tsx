@@ -7,14 +7,16 @@ import {
   downloadCanvas,
   type ExportFormat,
 } from '../../utils/exportImage'
+import type { PhotoFilter } from '../../types/filter'
 import type { PhotoLayout } from '../../types/layout'
 
 type ComposedPreviewProps = {
   layout: PhotoLayout
   photos: string[]
+  filter: PhotoFilter
 }
 
-function ComposedPreview({ layout, photos }: ComposedPreviewProps) {
+function ComposedPreview({ layout, photos, filter }: ComposedPreviewProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [hasFailed, setHasFailed] = useState(false)
@@ -24,7 +26,7 @@ function ComposedPreview({ layout, photos }: ComposedPreviewProps) {
     let isCancelled = false
     let createdUrl: string | null = null
 
-    composeSheet(layout, photos)
+    composeSheet(layout, photos, filter)
       .then(async (composed) => {
         const blob = await canvasToBlob(composed, 'image/png')
         if (isCancelled) return
@@ -40,7 +42,7 @@ function ComposedPreview({ layout, photos }: ComposedPreviewProps) {
       isCancelled = true
       if (createdUrl) URL.revokeObjectURL(createdUrl)
     }
-  }, [layout, photos])
+  }, [layout, photos, filter])
 
   async function handleDownload(format: ExportFormat) {
     if (!canvas) return

@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { defaultFilter, getFilterById } from '../data/filters'
 import { defaultLayout, getLayoutById } from '../data/layouts'
+import type { FilterId } from '../types/filter'
 import type { LayoutId } from '../types/layout'
 import { SessionContext } from './SessionContext'
 
@@ -9,9 +11,11 @@ type SessionProviderProps = {
 
 export function SessionProvider({ children }: SessionProviderProps) {
   const [layoutId, setLayoutId] = useState<LayoutId>(defaultLayout.id)
+  const [filterId, setFilterId] = useState<FilterId>(defaultFilter.id)
   const [photos, setPhotos] = useState<string[]>([])
 
   const layout = getLayoutById(layoutId)
+  const filter = getFilterById(filterId)
 
   // The ref always holds the newest list, so we can safely read it
   // when freeing memory. State is what makes the screen update.
@@ -38,7 +42,9 @@ export function SessionProvider({ children }: SessionProviderProps) {
     [updatePhotos],
   )
 
+  // Ends the current shoot: the photos go, and so do the edits made to them.
   const clearPhotos = useCallback(() => {
+    setFilterId(defaultFilter.id)
     if (photosRef.current.length === 0) return
     photosRef.current.forEach((url) => URL.revokeObjectURL(url))
     updatePhotos([])
@@ -53,9 +59,29 @@ export function SessionProvider({ children }: SessionProviderProps) {
     [clearPhotos],
   )
 
+  const selectFilter = useCallback((id: FilterId) => setFilterId(id), [])
+
   const value = useMemo(
-    () => ({ layout, selectLayout, photos, addPhoto, replacePhoto, clearPhotos }),
-    [layout, selectLayout, photos, addPhoto, replacePhoto, clearPhotos],
+    () => ({
+      layout,
+      selectLayout,
+      filter,
+      selectFilter,
+      photos,
+      addPhoto,
+      replacePhoto,
+      clearPhotos,
+    }),
+    [
+      layout,
+      selectLayout,
+      filter,
+      selectFilter,
+      photos,
+      addPhoto,
+      replacePhoto,
+      clearPhotos,
+    ],
   )
 
   return (

@@ -1,11 +1,13 @@
 import { Camera, RotateCcw } from 'lucide-react'
 import ComposedPreview from '../components/camera/ComposedPreview'
 import PhotoSheet from '../components/camera/PhotoSheet'
+import FilterPicker from '../components/editor/FilterPicker'
 import Button from '../components/ui/Button'
+import { filters } from '../data/filters'
 import { useSession } from '../hooks/useSession'
 
 function Review() {
-  const { layout, photos, clearPhotos } = useSession()
+  const { layout, filter, selectFilter, photos, clearPhotos } = useSession()
 
   if (photos.length === 0) {
     return (
@@ -31,8 +33,16 @@ function Review() {
         Your {layout.name}. Not happy with a shot? Go back and retake it.
       </p>
 
+      <div className="mt-6">
+        <FilterPicker
+          filters={filters}
+          selectedId={filter.id}
+          onSelect={selectFilter}
+        />
+      </div>
+
       <div className="mt-8">
-        <PhotoSheet layout={layout} photos={photos} />
+        <PhotoSheet layout={layout} photos={photos} filter={filter} />
       </div>
 
       <section aria-labelledby="final-image" className="mt-12">
@@ -42,7 +52,7 @@ function Review() {
         <p className="mb-4 mt-1 text-center text-sm text-slate-600">
           Drawn with the Canvas API. This is what you'll download.
         </p>
-        <ComposedPreview layout={layout} photos={photos} />
+        <ComposedPreview layout={layout} photos={photos} filter={filter} />
       </section>
 
       <div className="mt-8 flex flex-wrap justify-center gap-3">
