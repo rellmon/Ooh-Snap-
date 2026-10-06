@@ -1,4 +1,5 @@
 import { useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { getCaptionFont } from '../../data/caption'
 import type { TextCaption } from '../../types/caption'
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
@@ -65,6 +66,7 @@ function PhotoSheet({
   const sheet = getSheetSize(layout)
   const sheetRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<DragState | null>(null)
+  const captionFont = getCaptionFont(caption.fontId)
 
   // Canvas pixels -> percentages of the sheet (for positions and sizes).
   const percentX = (value: number) => `${(value / sheet.width) * 100}%`
@@ -212,12 +214,14 @@ function PhotoSheet({
             onKeyDown={(event) =>
               nudge(event, caption.x, caption.y, onMoveCaption)
             }
-            className="absolute cursor-grab select-none whitespace-nowrap rounded-lg px-[0.25em] font-display font-bold leading-none hover:ring-2 hover:ring-brand-600/70 focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing"
+            className="absolute cursor-grab select-none whitespace-nowrap rounded-lg px-[0.25em] leading-none hover:ring-2 hover:ring-brand-600/70 focus-visible:outline-2 focus-visible:outline-dashed focus-visible:outline-brand-600 active:cursor-grabbing"
             style={{
               left: `${caption.x * 100}%`,
               top: `${caption.y * 100}%`,
-              transform: 'translate(-50%, -50%)',
+              transform: `translate(-50%, -50%) rotate(${caption.rotation}deg)`,
               fontSize: `${caption.size * 100}cqw`,
+              fontFamily: captionFont.family,
+              fontWeight: captionFont.weight,
               color: caption.color,
               touchAction: 'none',
             }}

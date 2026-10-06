@@ -1,7 +1,10 @@
 import {
   captionColors,
+  captionFonts,
   MAX_CAPTION_LENGTH,
+  MAX_CAPTION_ROTATION,
   MAX_CAPTION_SIZE,
+  MIN_CAPTION_ROTATION,
   MIN_CAPTION_SIZE,
 } from '../../data/caption'
 import type { TextCaption } from '../../types/caption'
@@ -41,6 +44,31 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
       </div>
 
       <div>
+        <p className="font-semibold">Font</p>
+        <div
+          role="group"
+          aria-label="Text font"
+          className="mt-2 flex flex-wrap gap-2"
+        >
+          {captionFonts.map((font) => {
+            const isSelected = caption.fontId === font.id
+            return (
+              <Button
+                key={font.id}
+                size="sm"
+                variant={isSelected ? 'primary' : 'secondary'}
+                aria-pressed={isSelected}
+                onClick={() => onChange({ fontId: font.id })}
+                style={{ fontFamily: font.family, fontWeight: font.weight }}
+              >
+                {font.name}
+              </Button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
         <p className="font-semibold">Color</p>
         <div
           role="group"
@@ -69,28 +97,53 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
       </div>
 
       {hasText && (
-        <div>
-          <div className="flex items-center justify-between">
-            <label htmlFor="caption-size" className="font-semibold">
-              Size
-            </label>
-            <span className="text-sm text-slate-600">
-              {Math.round(caption.size * 100)}%
-            </span>
+        <>
+          <div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="caption-size" className="font-semibold">
+                Size
+              </label>
+              <span className="text-sm text-slate-600">
+                {Math.round(caption.size * 100)}%
+              </span>
+            </div>
+            <input
+              id="caption-size"
+              type="range"
+              min={Math.round(MIN_CAPTION_SIZE * 100)}
+              max={Math.round(MAX_CAPTION_SIZE * 100)}
+              step={1}
+              value={Math.round(caption.size * 100)}
+              onChange={(event) =>
+                onChange({ size: Number(event.target.value) / 100 })
+              }
+              className="mt-2 w-full accent-brand-600"
+            />
           </div>
-          <input
-            id="caption-size"
-            type="range"
-            min={Math.round(MIN_CAPTION_SIZE * 100)}
-            max={Math.round(MAX_CAPTION_SIZE * 100)}
-            step={1}
-            value={Math.round(caption.size * 100)}
-            onChange={(event) =>
-              onChange({ size: Number(event.target.value) / 100 })
-            }
-            className="mt-2 w-full accent-brand-600"
-          />
-        </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="caption-tilt" className="font-semibold">
+                Tilt
+              </label>
+              <span className="text-sm text-slate-600">
+                {caption.rotation}°
+              </span>
+            </div>
+            <input
+              id="caption-tilt"
+              type="range"
+              min={MIN_CAPTION_ROTATION}
+              max={MAX_CAPTION_ROTATION}
+              step={1}
+              value={caption.rotation}
+              onChange={(event) =>
+                onChange({ rotation: Number(event.target.value) })
+              }
+              className="mt-2 w-full accent-brand-600"
+            />
+          </div>
+        </>
       )}
 
       <div className="flex justify-center">

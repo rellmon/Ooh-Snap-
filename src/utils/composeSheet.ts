@@ -1,3 +1,4 @@
+import { getCaptionFont } from '../data/caption'
 import type { TextCaption } from '../types/caption'
 import type { PhotoFrame } from '../types/frame'
 import type { PhotoLayout } from '../types/layout'
@@ -71,6 +72,14 @@ export async function composeSheet(
 
   const sheet = getSheetSize(layout)
 
+  // The caption's font is only needed if there is a caption to draw.
+  const hasCaption = caption.content.trim() !== ''
+  const captionFont = getCaptionFont(caption.fontId)
+  const captionFontCss = `${captionFont.weight} ${caption.size * sheet.width}px ${captionFont.family}`
+  if (hasCaption) {
+    await document.fonts.load(captionFontCss, caption.content)
+  }
+
   const canvas = document.createElement('canvas')
   canvas.width = sheet.width
   canvas.height = sheet.height
@@ -114,16 +123,17 @@ export async function composeSheet(
   )
 
   // The caption goes above the photos and footer, but below the stickers.
-  if (caption.content.trim() !== '') {
+  if (hasCaption) {
+    context.save()
+    // Move the origin to the caption's center, then turn the canvas around it.
+    context.translate(caption.x * sheet.width, caption.y * sheet.height)
+    context.rotate((caption.rotation * Math.PI) / 180)
     context.fillStyle = caption.color
-    context.font = `700 ${caption.size * sheet.width}px Fredoka, system-ui, sans-serif`
+    context.font = captionFontCss
     context.textAlign = 'center'
     context.textBaseline = 'middle'
-    context.fillText(
-      caption.content,
-      caption.x * sheet.width,
-      caption.y * sheet.height,
-    )
+    context.fillText(caption.content, 0, 0)
+    context.restore()
   }
 
   // Stickers go last, so they sit on top of everything else.
