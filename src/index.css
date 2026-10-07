@@ -150,3 +150,32 @@
     box-shadow: var(--shadow-hard-sm);
   }
 }
+
+/* Touch screens: no gray tap flash, no accidental double-tap zoom, bigger sliders. */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  @media (pointer: coarse) {
+    input[type="range"] {
+      height: 2.75rem;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      width: 2rem;
+      height: 2rem;
+      margin-top: -0.625rem;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}

@@ -152,7 +152,7 @@ function Booth() {
 
       <section
         aria-label="Camera stage"
-        className="relative mt-8 aspect-video overflow-hidden border-2 border-ink bg-ink shadow-hard-lg"
+        className="relative mx-auto mt-8 aspect-[4/3] w-full max-w-[min(100%,calc(70dvh*4/3))] overflow-hidden border-2 border-ink bg-ink shadow-hard-lg"
       >
         <video
           ref={videoRef}
@@ -329,7 +329,7 @@ function Booth() {
             return (
               <li
                 key={index}
-                className="relative aspect-video overflow-hidden border-2 border-ink bg-white shadow-hard-sm"
+                className="relative aspect-[4/3] overflow-hidden border-2 border-ink bg-white shadow-hard-sm"
               >
                 {photo ? (
                   <>
