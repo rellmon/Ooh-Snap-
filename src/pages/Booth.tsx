@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   Camera,
   CameraOff,
+  Lightbulb,
   RotateCcw,
   SwitchCamera,
   Timer,
@@ -216,6 +217,21 @@ function Booth() {
         <Countdown count={count} />
         <CaptureFlash flashKey={flashKey} />
       </section>
+
+      {status === 'idle' && photos.length > 0 && (
+        <p className="mx-auto mt-6 flex max-w-xl items-start gap-3 border-2 border-dashed border-ink bg-white px-4 py-3">
+          <Lightbulb
+            size={22}
+            aria-hidden="true"
+            className="mt-0.5 shrink-0"
+          />
+          <span>
+            {isComplete
+              ? 'Your photos are still here, but reloading the page erases them. Turn the camera back on to retake a shot, or go on to see them.'
+              : 'Your photos so far are still here, but reloading the page erases them. Turn the camera back on to keep going.'}
+          </span>
+        </p>
+      )}
 
       {status === 'active' && (
         <div className="mt-8 text-center">

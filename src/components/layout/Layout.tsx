@@ -2,11 +2,17 @@ import { useEffect, useRef } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 import { Camera } from 'lucide-react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { useSession } from '../../hooks/useSession'
+import { useUnsavedWarning } from '../../hooks/useUnsavedWarning'
 
 function Layout() {
   const { pathname } = useLocation()
+  const { photos } = useSession()
   const mainRef = useRef<HTMLElement>(null)
   const previousPath = useRef(pathname)
+
+  // Photos only exist in memory, so warn before a reload or close can erase them.
+  useUnsavedWarning(photos.length > 0)
 
   // When the page changes, start at the top and move focus to the new content.
   useEffect(() => {
