@@ -20,3 +20,7 @@ export const DEFAULT_SOUND_ENABLED: boolean = true
 export function isBoolean(value: unknown): value is boolean {
   return typeof value === 'boolean'
 }
+
+// In kiosk mode, a booth nobody touches resets itself.
+export const IDLE_TIMEOUT_MS = 90_000
+export const IDLE_WARNING_MS = 15_000

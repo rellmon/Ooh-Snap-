@@ -8,6 +8,7 @@ import { useToast } from '../../hooks/useToast'
 import { useUnsavedWarning } from '../../hooks/useUnsavedWarning'
 import { isWakeLockSupported, useWakeLock } from '../../hooks/useWakeLock'
 import Button from '../ui/Button'
+import IdleGuard from './IdleGuard'
 
 function Layout() {
   const { pathname } = useLocation()
@@ -19,6 +20,10 @@ function Layout() {
   const { isSupported: canFullscreen, isFullscreen, enter, exit } = useFullscreen()
   // Kiosk mode is simply "fullscreen is on", and the screen stays awake with it.
   const { isHeld: isAwake } = useWakeLock(isFullscreen)
+
+  // In kiosk mode, a quiet booth resets itself. An empty start screen has nothing to reset.
+  const isIdleGuardActive =
+    isFullscreen && (pathname !== '/' || photos.length > 0)
 
   // Photos only exist in memory, so warn before a reload or close can erase them.
   useUnsavedWarning(photos.length > 0)
@@ -111,6 +116,8 @@ function Layout() {
           </motion.div>
         </MotionConfig>
       </main>
+
+      <IdleGuard active={isIdleGuardActive} />
 
       <footer className="border-t-2 border-ink">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-3 px-6 py-5">
