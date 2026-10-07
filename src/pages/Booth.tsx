@@ -13,6 +13,7 @@ import CountdownPicker from '../components/camera/CountdownPicker'
 import SoundToggle from '../components/camera/SoundToggle'
 import ArrowButton from '../components/ui/ArrowButton'
 import Button from '../components/ui/Button'
+import Spinner from '../components/ui/Spinner'
 import {
   COUNTDOWN_STORAGE_KEY,
   countdownOptions,
@@ -191,7 +192,8 @@ function Booth() {
 
             {status === 'requesting' && (
               <>
-                <p className="text-lg">
+                <p className="inline-flex items-center gap-3 text-lg">
+                  <Spinner />
                   Starting the camera... Allow access if your browser asks.
                 </p>
                 <Button disabled>Turn on camera</Button>

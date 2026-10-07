@@ -36,20 +36,22 @@ export function canvasToBlob(
   })
 }
 
+// Starts the download and returns the name of the file being saved.
 export async function downloadCanvas(
   canvas: HTMLCanvasElement,
   format: ExportFormat,
-): Promise<void> {
+): Promise<string> {
   const blob = await canvasToBlob(
     canvas,
     MIME_TYPES[format],
     format === 'jpg' ? JPG_QUALITY : undefined,
   )
 
+  const filename = createFilename(format)
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = createFilename(format)
+  link.download = filename
 
   document.body.appendChild(link)
   link.click()
@@ -57,4 +59,6 @@ export async function downloadCanvas(
 
   // Give the browser a moment to start the download before freeing the URL.
   setTimeout(() => URL.revokeObjectURL(url), 1000)
+
+  return filename
 }

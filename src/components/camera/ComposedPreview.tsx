@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Download } from 'lucide-react'
+import { useToast } from '../../hooks/useToast'
 import Button from '../ui/Button'
+import Spinner from '../ui/Spinner'
 import { composeSheet } from '../../utils/composeSheet'
 import {
   canvasToBlob,
@@ -33,6 +35,7 @@ function ComposedPreview({
   const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [hasFailed, setHasFailed] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
+  const { showToast } = useToast()
 
   useEffect(() => {
     let isCancelled = false
@@ -61,7 +64,8 @@ function ComposedPreview({
     setDownloadError(null)
 
     try {
-      await downloadCanvas(canvas, format)
+      const filename = await downloadCanvas(canvas, format)
+      showToast(`Download started: ${filename}`, 'success')
     } catch {
       setDownloadError("We couldn't create the download. Please try again.")
     }
@@ -82,8 +86,9 @@ function ComposedPreview({
     return (
       <p
         aria-live="polite"
-        className="mx-auto w-fit border-2 border-ink bg-sun px-4 py-2 font-condensed text-2xl font-extrabold uppercase tracking-wide shadow-hard motion-safe:animate-pulse"
+        className="mx-auto flex w-fit items-center gap-3 border-2 border-ink bg-sun px-4 py-2 font-condensed text-2xl font-extrabold uppercase tracking-wide shadow-hard"
       >
+        <Spinner />
         Developing your photo...
       </p>
     )
