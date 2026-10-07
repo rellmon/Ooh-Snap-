@@ -88,7 +88,7 @@ function CaptionEditor({ caption, onChange }: CaptionEditorProps) {
                 aria-label={color.name}
                 aria-pressed={isSelected}
                 onClick={() => onChange({ color: color.value })}
-                className={`h-10 w-10 border-2 border-ink transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
+                className={`h-10 w-10 border-2 border-ink pointer-coarse:h-12 pointer-coarse:w-12 transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
                   isSelected ? '-translate-x-0.5 -translate-y-0.5 shadow-hard' : ''
                 }`}
                 style={{ backgroundColor: color.value }}
