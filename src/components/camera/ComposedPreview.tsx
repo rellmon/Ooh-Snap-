@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
-import { Download } from 'lucide-react'
+import { Download, Share2 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
 import Button from '../ui/Button'
 import Spinner from '../ui/Spinner'
 import { composeSheet } from '../../utils/composeSheet'
 import {
   canvasToBlob,
+  canvasToFile,
   downloadCanvas,
   type ExportFormat,
 } from '../../utils/exportImage'
+import { canShareImages, shareImage } from '../../utils/shareImage'
 import type { TextCaption } from '../../types/caption'
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
@@ -33,9 +35,12 @@ function ComposedPreview({
 }: ComposedPreviewProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [shareFile, setShareFile] = useState<File | null>(null)
   const [hasFailed, setHasFailed] = useState(false)
-  const [downloadError, setDownloadError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
   const { showToast } = useToast()
+  // Asked once. Passing the function (not calling it) lets React run it only on the first render.
+  const [canShare] = useState(canShareImages)
 
   useEffect(() => {
     let isCancelled = false
@@ -43,10 +48,15 @@ function ComposedPreview({
 
     composeSheet(layout, photos, filterCss, frame, stickers, caption)
       .then(async (composed) => {
-        const blob = await canvasToBlob(composed, 'image/png')
+        // The share file is made now, so tapping Share can call the share menu right away.
+        const [blob, file] = await Promise.all([
+          canvasToBlob(composed, 'image/png'),
+          canShare ? canvasToFile(composed, 'jpg') : Promise.resolve(null),
+        ])
         if (isCancelled) return
         createdUrl = URL.createObjectURL(blob)
         setCanvas(composed)
+        setShareFile(file)
         setImageUrl(createdUrl)
       })
       .catch(() => {
@@ -57,17 +67,31 @@ function ComposedPreview({
       isCancelled = true
       if (createdUrl) URL.revokeObjectURL(createdUrl)
     }
-  }, [layout, photos, filterCss, frame, stickers, caption])
+  }, [layout, photos, filterCss, frame, stickers, caption, canShare])
 
   async function handleDownload(format: ExportFormat) {
     if (!canvas) return
-    setDownloadError(null)
+    setActionError(null)
 
     try {
       const filename = await downloadCanvas(canvas, format)
       showToast(`Download started: ${filename}`, 'success')
     } catch {
-      setDownloadError("We couldn't create the download. Please try again.")
+      setActionError("We couldn't create the download. Please try again.")
+    }
+  }
+
+  async function handleShare() {
+    if (!shareFile) return
+    setActionError(null)
+
+    try {
+      const result = await shareImage(shareFile)
+      if (result === 'shared') showToast('Shared!', 'success')
+    } catch {
+      setActionError(
+        "We couldn't open the share menu. You can still download your photo.",
+      )
     }
   }
 
@@ -104,7 +128,17 @@ function ComposedPreview({
       />
 
       <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <Button size="lg" onClick={() => handleDownload('png')}>
+        {canShare && shareFile && (
+          <Button size="lg" onClick={handleShare}>
+            <Share2 size={20} aria-hidden="true" />
+            Share
+          </Button>
+        )}
+        <Button
+          variant={canShare ? 'secondary' : 'primary'}
+          size="lg"
+          onClick={() => handleDownload('png')}
+        >
           <Download size={20} aria-hidden="true" />
           Download PNG
         </Button>
@@ -118,12 +152,12 @@ function ComposedPreview({
         </Button>
       </div>
 
-      {downloadError && (
+      {actionError && (
         <p
           role="alert"
           className="mx-auto mt-6 w-fit border-2 border-ink bg-blaze px-4 py-2 text-center font-condensed text-lg font-extrabold uppercase"
         >
-          {downloadError}
+          {actionError}
         </p>
       )}
     </>

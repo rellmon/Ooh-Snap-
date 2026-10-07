@@ -62,3 +62,17 @@ export async function downloadCanvas(
 
   return filename
 }
+
+// Turns the canvas into a named image file, ready to hand to the share menu.
+export async function canvasToFile(
+  canvas: HTMLCanvasElement,
+  format: ExportFormat,
+): Promise<File> {
+  const blob = await canvasToBlob(
+    canvas,
+    MIME_TYPES[format],
+    format === 'jpg' ? JPG_QUALITY : undefined,
+  )
+
+  return new File([blob], createFilename(format), { type: MIME_TYPES[format] })
+}
