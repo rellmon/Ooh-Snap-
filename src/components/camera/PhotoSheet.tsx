@@ -6,7 +6,6 @@ import type { PhotoLayout } from '../../types/layout'
 import type { PlacedSticker } from '../../types/sticker'
 import {
   CORNER_RADIUS,
-  EMOJI_FONT_FAMILY,
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   getCellRect,
@@ -244,7 +243,7 @@ function PhotoSheet({
             <button
               key={sticker.uid}
               type="button"
-              aria-label={`Sticker ${index + 1}${isSelected ? ', selected' : ''}. Drag it, or use the arrow keys, to move it.`}
+              aria-label={`${sticker.name} sticker ${index + 1}${isSelected ? ', selected' : ''}. Drag it, or use the arrow keys, to move it.`}
               onPointerDown={(event) => {
                 onSelectSticker(sticker.uid)
                 startDrag(event, sticker.uid, sticker.x, sticker.y)
@@ -268,13 +267,17 @@ function PhotoSheet({
               style={{
                 left: `${sticker.x * 100}%`,
                 top: `${sticker.y * 100}%`,
+                width: `${sticker.size * 100}%`,
                 transform: 'translate(-50%, -50%)',
-                fontSize: `${sticker.size * 100}cqw`,
-                fontFamily: EMOJI_FONT_FAMILY,
                 touchAction: 'none',
               }}
             >
-              <span aria-hidden="true">{sticker.emoji}</span>
+              <img
+                src={sticker.src}
+                alt=""
+                draggable={false}
+                className="pointer-events-none block h-auto w-full select-none"
+              />
             </button>
           )
         })}

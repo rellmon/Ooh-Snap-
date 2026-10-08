@@ -4,7 +4,7 @@ import type { TextCaption } from '../types/caption'
 import type { FilterId, PhotoFilter } from '../types/filter'
 import type { FrameId, PhotoFrame } from '../types/frame'
 import type { LayoutId, PhotoLayout } from '../types/layout'
-import type { PlacedSticker } from '../types/sticker'
+import type { PlacedSticker, StickerOption } from '../types/sticker'
 
 export type SessionContextValue = {
   layout: PhotoLayout
@@ -21,7 +21,7 @@ export type SessionContextValue = {
   updateCaption: (changes: Partial<TextCaption>) => void
   stickers: PlacedSticker[]
   // Returns the new sticker's id, so the page can select it right away.
-  addSticker: (emoji: string) => string
+  addSticker: (option: StickerOption) => string
   removeSticker: (uid: string) => void
   clearStickers: () => void
   moveSticker: (uid: string, x: number, y: number) => void

@@ -10,7 +10,7 @@ import type { TextCaption } from '../types/caption'
 import type { FilterId } from '../types/filter'
 import type { FrameId } from '../types/frame'
 import type { LayoutId } from '../types/layout'
-import type { PlacedSticker } from '../types/sticker'
+import type { PlacedSticker, StickerOption } from '../types/sticker'
 import { SessionContext } from './SessionContext'
 
 type SessionProviderProps = {
@@ -95,10 +95,11 @@ export function SessionProvider({ children }: SessionProviderProps) {
   }, [])
 
   // New stickers land somewhere near the middle, so they don't stack exactly.
-  const addSticker = useCallback((emoji: string): string => {
+  const addSticker = useCallback((option: StickerOption): string => {
     const sticker: PlacedSticker = {
       uid: crypto.randomUUID(),
-      emoji,
+      src: option.src,
+      name: option.name,
       x: 0.3 + Math.random() * 0.4,
       y: 0.3 + Math.random() * 0.4,
       size: DEFAULT_STICKER_SIZE,

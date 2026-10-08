@@ -12,10 +12,6 @@ export const FOOTER_FONT_SIZE = 56
 // The color of an empty photo slot, in both the preview and the canvas.
 export const PLACEHOLDER_COLOR = '#e8e2d2'
 
-// Used for stickers in both the preview and the canvas, so they match.
-export const EMOJI_FONT_FAMILY =
-  '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif'
-
 type SheetSize = {
   width: number
   height: number

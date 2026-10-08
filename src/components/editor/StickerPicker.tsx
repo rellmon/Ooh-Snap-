@@ -8,7 +8,7 @@ type StickerPickerProps = {
   options: StickerOption[]
   placed: PlacedSticker[]
   selected: PlacedSticker | null
-  onAdd: (emoji: string) => void
+  onAdd: (option: StickerOption) => void
   onSelect: (uid: string) => void
   onResize: (uid: string, size: number) => void
   onRemove: (uid: string) => void
@@ -39,10 +39,15 @@ function StickerPicker({
               key={option.id}
               type="button"
               aria-label={`Add ${option.name} sticker`}
-              onClick={() => onAdd(option.emoji)}
+              onClick={() => onAdd(option)}
               className="flex h-12 w-12 items-center justify-center border-2 border-ink bg-white text-2xl shadow-hard-sm transition-[translate,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-sun hover:shadow-hard active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
-              <span aria-hidden="true">{option.emoji}</span>
+              <img
+                src={option.src}
+                alt=""
+                draggable={false}
+                className="h-8 w-8 object-contain"
+              />
             </button>
           ))}
         </div>
@@ -69,7 +74,12 @@ function StickerPicker({
                         : 'bg-white hover:bg-paper'
                     }`}
                   >
-                    <span aria-hidden="true">{sticker.emoji}</span>
+                    <img
+                      src={sticker.src}
+                      alt=""
+                      draggable={false}
+                      className="h-8 w-8 object-contain"
+                    />
                   </button>
                 </li>
               )

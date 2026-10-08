@@ -5,7 +5,6 @@ import type { PhotoLayout } from '../types/layout'
 import type { PlacedSticker } from '../types/sticker'
 import {
   CORNER_RADIUS,
-  EMOJI_FONT_FAMILY,
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   getCellRect,
@@ -65,6 +64,11 @@ export async function composeSheet(
 ): Promise<HTMLCanvasElement> {
   const images = await Promise.all(
     photos.slice(0, layout.photoCount).map(loadImage),
+  )
+
+  // A sticker that fails to load is skipped, so one bad file can't ruin the export.
+  const stickerImages = await Promise.all(
+    stickers.map((sticker) => loadImage(sticker.src).catch(() => null)),
   )
 
   // Make sure the footer font is ready before we draw with it.
@@ -137,16 +141,22 @@ export async function composeSheet(
   }
 
   // Stickers go last, so they sit on top of everything else.
-  for (const sticker of stickers) {
-    context.font = `${sticker.size * sheet.width}px ${EMOJI_FONT_FAMILY}`
-    context.textAlign = 'center'
-    context.textBaseline = 'middle'
-    context.fillText(
-      sticker.emoji,
-      sticker.x * sheet.width,
-      sticker.y * sheet.height,
+  context.imageSmoothingQuality = 'high'
+  stickers.forEach((sticker, index) => {
+    const image = stickerImages[index]
+    if (!image) return
+
+    const width = sticker.size * sheet.width
+    const height = width * (image.naturalHeight / image.naturalWidth)
+
+    context.drawImage(
+      image,
+      sticker.x * sheet.width - width / 2,
+      sticker.y * sheet.height - height / 2,
+      width,
+      height,
     )
-  }
+  })
 
   return canvas
 }
