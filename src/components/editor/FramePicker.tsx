@@ -1,5 +1,5 @@
-import Button from '../ui/Button'
 import type { FrameId, PhotoFrame } from '../../types/frame'
+import TileButton from '../ui/TileButton'
 
 type FramePickerProps = {
   frames: PhotoFrame[]
@@ -12,22 +12,22 @@ function FramePicker({ frames, selectedId, onSelect }: FramePickerProps) {
     <div
       role="group"
       aria-label="Photo frames"
-      className="flex flex-wrap justify-center gap-3"
+      className="grid grid-cols-3 gap-3"
     >
       {frames.map((frame) => (
-        <Button
+        <TileButton
           key={frame.id}
-          variant={frame.id === selectedId ? 'primary' : 'secondary'}
-          aria-pressed={frame.id === selectedId}
+          label={frame.name}
+          selected={frame.id === selectedId}
           onClick={() => onSelect(frame.id)}
         >
           <span
-            aria-hidden="true"
-            className="h-4 w-4 border-2 border-ink"
-            style={{ backgroundColor: frame.background }}
-          />
-          {frame.name}
-        </Button>
+            className="flex h-full w-full items-center justify-center font-heading text-xl leading-none"
+            style={{ backgroundColor: frame.background, color: frame.textColor }}
+          >
+            OOH SNAP!
+          </span>
+        </TileButton>
       ))}
     </div>
   )

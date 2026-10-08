@@ -1,8 +1,10 @@
+import type { LucideIcon } from 'lucide-react'
 import type { KeyboardEvent, ReactNode } from 'react'
 
 export type TabItem<Id extends string> = {
   id: Id
   label: string
+  icon?: LucideIcon
 }
 
 type TabsProps<Id extends string> = {
@@ -45,15 +47,17 @@ function Tabs<Id extends string>({
 
   return (
     <div>
-      {/* The padding leaves room for the shadows, which the scroll area would clip. */}
+      {/* One toolbar: every tab gets an equal share of the width, so nothing scrolls or clips. */}
       <div
         role="tablist"
         aria-label={label}
         onKeyDown={handleKeyDown}
-        className="flex gap-3 overflow-x-auto p-2 pb-3"
+        className="grid border-2 border-ink bg-white shadow-hard"
+        style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
       >
-        {tabs.map((tab) => {
+        {tabs.map((tab, index) => {
           const isActive = tab.id === activeId
+          const Icon = tab.icon
           return (
             <button
               key={tab.id}
@@ -64,13 +68,12 @@ function Tabs<Id extends string>({
               aria-controls={`panel-${tab.id}`}
               tabIndex={isActive ? 0 : -1}
               onClick={() => onChange(tab.id)}
-              className={`shrink-0 border-2 border-ink px-4 py-2 font-condensed text-lg font-extrabold uppercase tracking-wide transition-[translate,box-shadow] duration-100 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink ${
-                isActive
-                  ? 'bg-sun shadow-hard'
-                  : 'bg-paper hover:-translate-y-0.5 hover:bg-white'
-              }`}
+              className={`flex min-w-0 flex-col items-center gap-1 px-1 py-2.5 font-condensed text-xs font-extrabold uppercase transition-colors focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-ink sm:text-sm md:text-base md:tracking-wide ${
+                index > 0 ? 'border-l-2 border-ink' : ''
+              } ${isActive ? 'bg-sun' : 'bg-white hover:bg-paper'}`}
             >
-              {tab.label}
+              {Icon && <Icon size={20} aria-hidden="true" />}
+              <span>{tab.label}</span>
             </button>
           )
         })}
@@ -81,7 +84,7 @@ function Tabs<Id extends string>({
         id={`panel-${activeId}`}
         aria-labelledby={`tab-${activeId}`}
         tabIndex={0}
-        className="mt-4 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink"
+        className="mt-5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ink"
       >
         {children}
       </div>

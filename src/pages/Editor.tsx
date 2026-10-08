@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import {
+  ArrowLeft,
+  Frame,
+  SlidersHorizontal,
+  Smile,
+  Sparkles,
+  Type,
+} from 'lucide-react'
 import NoPhotos from '../components/camera/NoPhotos'
 import PhotoSheet from '../components/camera/PhotoSheet'
 import AdjustmentSliders from '../components/editor/AdjustmentSliders'
@@ -21,11 +28,11 @@ import { buildFilterCss } from '../utils/filterCss'
 type EditorTab = 'filters' | 'adjust' | 'frames' | 'text' | 'stickers'
 
 const tabs: TabItem<EditorTab>[] = [
-  { id: 'filters', label: 'Filters' },
-  { id: 'adjust', label: 'Adjust' },
-  { id: 'frames', label: 'Frames' },
-  { id: 'text', label: 'Text' },
-  { id: 'stickers', label: 'Stickers' },
+  { id: 'filters', label: 'Filters', icon: Sparkles },
+  { id: 'adjust', label: 'Adjust', icon: SlidersHorizontal },
+  { id: 'frames', label: 'Frames', icon: Frame },
+  { id: 'text', label: 'Text', icon: Type },
+  { id: 'stickers', label: 'Stickers', icon: Smile },
 ]
 
 function Editor() {
@@ -103,6 +110,7 @@ function Editor() {
                 filters={filters}
                 selectedId={filter.id}
                 onSelect={selectFilter}
+                previewSrc={photos[0]}
               />
             )}
 
@@ -132,7 +140,7 @@ function Editor() {
                 options={stickerOptions}
                 placed={stickers}
                 selected={selectedSticker}
-                onAdd={(emoji) => setSelectedUid(addSticker(emoji))}
+                onAdd={(option) => setSelectedUid(addSticker(option))}
                 onSelect={setSelectedUid}
                 onResize={resizeSticker}
                 onRemove={removeSticker}
