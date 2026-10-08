@@ -17,7 +17,7 @@ function Final() {
     frame,
     stickers,
     caption,
-    clearPhotos,
+    resetSession,
   } = useSession()
   const navigate = useNavigate()
 
@@ -28,7 +28,7 @@ function Final() {
   const filterCss = buildFilterCss(filter, adjustments)
 
   function handleNewSession() {
-    clearPhotos()
+    resetSession()
     navigate('/templates')
   }
 

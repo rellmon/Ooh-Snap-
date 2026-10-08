@@ -10,7 +10,7 @@ import { useSession } from '../hooks/useSession'
 
 function Review() {
   usePageTitle('Review your photos')
-  const { layout, photos, clearPhotos } = useSession()
+  const { layout, photos, resetSession } = useSession()
 
   if (photos.length === 0) {
     return <NoPhotos />
@@ -42,7 +42,7 @@ function Review() {
           <Camera size={20} aria-hidden="true" />
           Back to the booth
         </Button>
-        <Button variant="secondary" size="lg" onClick={clearPhotos}>
+        <Button variant="secondary" size="lg" onClick={resetSession}>
           <RotateCcw size={18} aria-hidden="true" />
           Start over
         </Button>

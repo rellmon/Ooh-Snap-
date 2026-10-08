@@ -57,7 +57,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
   )
 
   // Ends the current shoot: the photos go, and so do the edits made to them.
-  const clearPhotos = useCallback(() => {
+  const resetSession = useCallback(() => {
     setFilterId(defaultFilter.id)
     setFrameId(defaultFrame.id)
     setAdjustments(DEFAULT_ADJUSTMENTS)
@@ -71,10 +71,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
   // Photos taken for one layout don't belong to another, so switching clears them.
   const selectLayout = useCallback(
     (id: LayoutId) => {
-      clearPhotos()
+      resetSession()
       setLayoutId(id)
     },
-    [clearPhotos],
+    [resetSession],
   )
 
   const selectFilter = useCallback((id: FilterId) => setFilterId(id), [])
@@ -151,7 +151,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       photos,
       addPhoto,
       replacePhoto,
-      clearPhotos,
+      resetSession,
     }),
     [
       layout,
@@ -174,7 +174,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
       photos,
       addPhoto,
       replacePhoto,
-      clearPhotos,
+      resetSession,
     ],
   )
 

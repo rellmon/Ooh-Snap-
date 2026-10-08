@@ -10,6 +10,7 @@ import {
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   getCellRect,
+  getSheetMaxWidth,
   getSheetSize,
   PLACEHOLDER_COLOR,
 } from '../../utils/sheetMetrics'
@@ -147,7 +148,7 @@ function PhotoSheet({
   return (
     <div
       className="@container mx-auto w-full"
-      style={{ maxWidth: `${layout.columns * 14}rem` }}
+      style={{ maxWidth: getSheetMaxWidth(layout) }}
     >
       {/* An outline, not a border: a border would shrink the inside slightly
           and break the exact proportions the canvas copy relies on. */}

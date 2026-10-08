@@ -46,7 +46,7 @@ function Booth() {
     stop,
     switchCamera,
   } = useCamera()
-  const { layout, photos, addPhoto, replacePhoto, clearPhotos } = useSession()
+  const { layout, photos, addPhoto, replacePhoto, resetSession } = useSession()
   const totalPhotos = layout.photoCount
   const [countdownSeconds, setCountdownSeconds] = usePersistentState(
     COUNTDOWN_STORAGE_KEY,
@@ -126,7 +126,7 @@ function Booth() {
 
   function handleStartOver() {
     cancel()
-    clearPhotos()
+    resetSession()
     setCaptureError(null)
     setIsRunning(false)
     setRetakeIndex(null)

@@ -11,7 +11,7 @@ type IdleGuardProps = {
 }
 
 function IdleGuard({ active }: IdleGuardProps) {
-  const { clearPhotos } = useSession()
+  const { resetSession } = useSession()
   const { showToast } = useToast()
   const navigate = useNavigate()
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -21,7 +21,7 @@ function IdleGuard({ active }: IdleGuardProps) {
     idleMs: IDLE_TIMEOUT_MS,
     warningMs: IDLE_WARNING_MS,
     onTimeout: () => {
-      clearPhotos()
+      resetSession()
       navigate('/')
       showToast('Photos cleared. Ready for the next guest!', 'info')
     },

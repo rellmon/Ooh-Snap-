@@ -11,6 +11,7 @@ import {
   type ExportFormat,
 } from '../../utils/exportImage'
 import { canShareImages, shareImage } from '../../utils/shareImage'
+import { getSheetMaxWidth } from '../../utils/sheetMetrics'
 import type { TextCaption } from '../../types/caption'
 import type { PhotoFrame } from '../../types/frame'
 import type { PhotoLayout } from '../../types/layout'
@@ -124,7 +125,7 @@ function ComposedPreview({
         src={imageUrl}
         alt="Your finished photo sheet"
         className="mx-auto w-full border-2 border-ink shadow-hard-lg"
-        style={{ maxWidth: `${layout.columns * 14}rem` }}
+        style={{ maxWidth: getSheetMaxWidth(layout) }}
       />
 
       <div className="mt-8 flex flex-wrap justify-center gap-4">

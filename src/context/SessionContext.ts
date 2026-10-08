@@ -29,7 +29,7 @@ export type SessionContextValue = {
   photos: string[]
   addPhoto: (url: string) => void
   replacePhoto: (index: number, url: string) => void
-  clearPhotos: () => void
+  resetSession: () => void
 }
 
 export const SessionContext = createContext<SessionContextValue | null>(null)

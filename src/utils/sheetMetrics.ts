@@ -51,3 +51,11 @@ export function getCellRect(layout: PhotoLayout, index: number): Rect {
     height: CELL_HEIGHT,
   }
 }
+
+// How wide the finished sheet may grow on screen. Both the Editor preview and
+// the Final image use it, so they always match.
+const SHEET_REM_PER_COLUMN = 14
+
+export function getSheetMaxWidth(layout: PhotoLayout): string {
+  return `${layout.columns * SHEET_REM_PER_COLUMN}rem`
+}
