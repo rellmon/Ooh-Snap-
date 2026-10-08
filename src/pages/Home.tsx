@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
-import { Camera, Download, Sparkles } from 'lucide-react'
+import { Camera, Download, QrCode, Sparkles } from 'lucide-react'
 import PhotoStripArt from '../components/home/PhotoStripArt'
+import QrDialog from '../components/share/QrDialog'
 import ArrowButton from '../components/ui/ArrowButton'
+import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import { usePageTitle } from '../hooks/usePageTitle'
 
@@ -32,6 +35,7 @@ const rise = (delay: number) => ({
 
 function Home() {
   usePageTitle()
+  const [isQrOpen, setIsQrOpen] = useState(false)
 
   return (
     <MotionConfig reducedMotion="user">
@@ -73,8 +77,19 @@ function Home() {
               </span>
             </motion.div>
 
-            <motion.div {...rise(0.4)} className="mt-8">
+            <motion.div
+              {...rise(0.4)}
+              className="mt-8 flex flex-wrap items-center gap-4"
+            >
               <ArrowButton to="/templates">Start the booth</ArrowButton>
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => setIsQrOpen(true)}
+              >
+                <QrCode size={20} aria-hidden="true" />
+                Show QR code
+              </Button>
             </motion.div>
           </div>
 
@@ -117,6 +132,8 @@ function Home() {
           </ol>
         </section>
       </div>
+
+      <QrDialog open={isQrOpen} onClose={() => setIsQrOpen(false)} />
     </MotionConfig>
   )
 }
