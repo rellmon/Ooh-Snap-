@@ -7,7 +7,7 @@ export const PADDING = 40
 export const GAP = 24
 export const FOOTER_HEIGHT = 120
 export const CORNER_RADIUS = 20
-export const FOOTER_FONT_SIZE = 56
+export const FOOTER_FONT_SIZE = 64
 
 // The color of an empty photo slot, in both the preview and the canvas.
 export const PLACEHOLDER_COLOR = '#e8e2d2'

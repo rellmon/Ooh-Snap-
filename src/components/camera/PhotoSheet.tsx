@@ -196,7 +196,7 @@ function PhotoSheet({
         })}
 
         <p
-          className="absolute inset-x-0 bottom-0 flex items-center justify-center font-display font-bold"
+          className="absolute inset-x-0 bottom-0 flex items-center justify-center font-heading"
           style={{
             height: percentY(FOOTER_HEIGHT),
             fontSize: scaled(FOOTER_FONT_SIZE),

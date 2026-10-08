@@ -147,6 +147,7 @@ The site is deployed on Vercel's free Hobby plan. Vercel builds from the `main` 
 - Photos are not kept across a page reload. A warning appears before a reload or close. Saving a session in IndexedDB would remove that limit.
 - A QR code that opens a specific photo needs hosted storage, a small serverless function and a change to the privacy promise, so it is deliberately not included.
 - The caption is a single line of up to 20 characters.
+- On Safari and iPhones, filters and adjustments show in the editor but may be missing from downloaded images, because Safari's canvas has not supported the `filter` property. Working around it would mean applying filters to the pixels by hand, which is a trade-off left out for now.
 
 ## Credits
 

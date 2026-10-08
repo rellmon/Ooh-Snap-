@@ -12,7 +12,7 @@ import {
   PLACEHOLDER_COLOR,
 } from './sheetMetrics'
 
-const FOOTER_FONT = `700 ${FOOTER_FONT_SIZE}px Fredoka, system-ui, sans-serif`
+const FOOTER_FONT = `400 ${FOOTER_FONT_SIZE}px Anton, Impact, "Arial Narrow", sans-serif`
 
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {

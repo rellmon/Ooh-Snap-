@@ -2,8 +2,6 @@
 
 @theme {
   /* Fonts */
-  /* Fredoka stays: the photo sheet footer on the exported image uses it. */
-  --font-display: "Fredoka", ui-rounded, system-ui, sans-serif;
   --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Anton", Impact, "Arial Narrow", sans-serif;
   --font-condensed: "Barlow Condensed", "Arial Narrow", ui-sans-serif, sans-serif;

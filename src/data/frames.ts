@@ -5,19 +5,19 @@ export const frames: PhotoFrame[] = [
     id: 'minimal',
     name: 'Minimal',
     background: '#ffffff',
-    textColor: '#db2777',
+    textColor: '#0b0b0b',
   },
   {
     id: 'noir',
     name: 'Noir',
-    background: '#111827',
-    textColor: '#f9a8d4',
+    background: '#0b0b0b',
+    textColor: '#ffc20e',
   },
   {
     id: 'party',
     name: 'Party',
-    background: '#fde047',
-    textColor: '#be185d',
+    background: '#ffc20e',
+    textColor: '#0b0b0b',
   },
 ]
 
