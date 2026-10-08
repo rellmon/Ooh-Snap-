@@ -23,7 +23,7 @@ function Tabs<Id extends string>({
   // Arrow keys, Home and End move between tabs, as people expect from tabs.
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const currentIndex = tabs.findIndex((tab) => tab.id === activeId)
-    let nextIndex = currentIndex
+    let nextIndex: number
 
     if (event.key === 'ArrowRight') {
       nextIndex = (currentIndex + 1) % tabs.length

@@ -18,7 +18,8 @@ export function useIdleTimeout({
   warningMs,
   onTimeout,
 }: IdleTimeoutOptions) {
-  const lastActivityRef = useRef(Date.now())
+  // The real time is written when the timer starts, in the effect below.
+  const lastActivityRef = useRef(0)
   const onTimeoutRef = useRef(onTimeout)
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
 
