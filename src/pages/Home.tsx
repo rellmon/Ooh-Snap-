@@ -42,13 +42,10 @@ function Home() {
       <div className="mx-auto max-w-5xl overflow-x-clip px-6 pb-20">
         <section className="grid grid-cols-1 items-center gap-12 py-10 md:grid-cols-2 md:py-16">
           <div className="min-w-0">
-            <motion.h1
-              {...rise(0)}
-              className="text-[6.5rem] leading-[0.85] sm:text-[9rem]"
-            >
+            <h1 className="text-[6.5rem] leading-[0.85] sm:text-[9rem]">
               <span className="block">Ooh</span>
               <span className="block">Snap!</span>
-            </motion.h1>
+            </h1>
 
             <motion.p
               {...rise(0.1)}

@@ -11,7 +11,7 @@ import Button from '../ui/Button'
 import IdleGuard from './IdleGuard'
 
 function Layout() {
-  const { pathname } = useLocation()
+  const { pathname, key: locationKey } = useLocation()
   const { photos } = useSession()
   const { showToast } = useToast()
   const mainRef = useRef<HTMLElement>(null)
@@ -108,7 +108,7 @@ function Layout() {
         <MotionConfig reducedMotion="user">
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, y: 10 }}
+            initial={locationKey === 'default' ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2 }}
           >
