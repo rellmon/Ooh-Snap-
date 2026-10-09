@@ -1,5 +1,5 @@
 // Asks the browser whether it can share image files, using a tiny test file.
-export function canShareImages(): boolean {
+export function canShareImages(type = 'image/jpeg'): boolean {
   if (
     typeof navigator === 'undefined' ||
     typeof navigator.share !== 'function' ||
@@ -9,7 +9,7 @@ export function canShareImages(): boolean {
   }
 
   try {
-    const probe = new File([''], 'probe.jpg', { type: 'image/jpeg' })
+    const probe = new File([''], 'probe', { type })
     return navigator.canShare({ files: [probe] })
   } catch {
     return false

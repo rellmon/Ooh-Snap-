@@ -39,6 +39,7 @@ A photobooth that runs entirely in your browser. Pose with your friends, take a 
 **Keeping it**
 
 - Download as PNG or JPG
+- A looping GIF of your photos at three speeds, made in the browser
 - Share through the phone's own share menu (Web Share API)
 - A QR code that opens the booth on another phone
 
@@ -68,6 +69,7 @@ The app has no backend, database or user accounts. The camera stream is never up
 | Animation | Framer Motion | Page transitions and the countdown, with reduced-motion support |
 | Icons | Lucide React | Small, consistent SVG icons |
 | QR codes | qrcode.react | Renders a QR code as crisp SVG |
+| GIF export | gifenc | A small pure-JavaScript GIF encoder that runs in the browser |
 | Browser APIs | MediaDevices, Canvas 2D, Web Share, Fullscreen, Screen Wake Lock, Web Audio, localStorage | Everything a photobooth needs, with no backend |
 | Hosting | Vercel (Hobby plan) and GitHub | Every push to `main` deploys automatically |
 
@@ -87,6 +89,7 @@ A **session** (layout, photos, filter, frame, caption, stickers) lives in a Reac
 - **One set of measurements, two renderers.** The on-screen sheet (CSS) and the downloaded image (Canvas) are both built from the numbers in `sheetMetrics.ts`, so what you see is what you download.
 - **Positions as fractions.** Stickers and the caption store their position and size as fractions of the sheet. They land in the same place on any screen size and in the full-resolution export.
 - **One filter string.** The same CSS `filter` value drives the `<img>` preview and `context.filter` on the canvas.
+- **GIF export.** Each GIF frame is the same sheet drawing with a single photo. The slow work (drawing, shrinking and reducing each frame to 256 colours) runs once and is kept, and writing the GIF is a separate quick step. Changing the speed only repeats the quick step.
 - **Simple state.** `useState`, `useRef` and two small React contexts (session and toasts). No state library was needed.
 - **Large images.** Photos are JPEG blobs referenced by object URLs, not base64 strings in state, and each URL is revoked when its photo is replaced or cleared. The heavy canvas work happens once, on the final page.
 - **Drag with Pointer Events.** One implementation covers mouse, touch and pen, with arrow-key movement for keyboard users.
@@ -147,6 +150,7 @@ The site is deployed on Vercel's free Hobby plan. Vercel builds from the `main` 
 - Photos are not kept across a page reload. A warning appears before a reload or close. Saving a session in IndexedDB would remove that limit.
 - A QR code that opens a specific photo needs hosted storage, a small serverless function and a change to the privacy promise, so it is deliberately not included.
 - The caption is a single line of up to 20 characters.
+- GIFs are limited to 256 colours per frame, so photos look grainier than in the PNG or JPG.
 - On Safari and iPhones, filters and adjustments show in the editor but may be missing from downloaded images, because Safari's canvas has not supported the `filter` property. Working around it would mean applying filters to the pixels by hand, which is a trade-off left out for now.
 
 ## Credits

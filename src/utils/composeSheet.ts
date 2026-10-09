@@ -1,7 +1,7 @@
 import { getCaptionFont } from '../data/caption'
 import type { TextCaption } from '../types/caption'
 import type { PhotoFrame } from '../types/frame'
-import type { PhotoLayout } from '../types/layout'
+import type { LayoutGrid } from './sheetMetrics'
 import type { PlacedSticker } from '../types/sticker'
 import {
   CORNER_RADIUS,
@@ -55,7 +55,7 @@ function drawCover(
 }
 
 export async function composeSheet(
-  layout: PhotoLayout,
+  layout: LayoutGrid,
   photos: string[],
   filterCss: string,
   frame: PhotoFrame,

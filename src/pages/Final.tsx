@@ -1,6 +1,7 @@
 import { ArrowLeft, Camera } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import ComposedPreview from '../components/camera/ComposedPreview'
+import GifMaker from '../components/camera/GifMaker'
 import NoPhotos from '../components/camera/NoPhotos'
 import Button from '../components/ui/Button'
 import { usePageTitle } from '../hooks/usePageTitle'
@@ -44,6 +45,14 @@ function Final() {
 
       <ComposedPreview
         layout={layout}
+        photos={photos}
+        filterCss={filterCss}
+        frame={frame}
+        stickers={stickers}
+        caption={caption}
+      />
+
+      <GifMaker
         photos={photos}
         filterCss={filterCss}
         frame={frame}

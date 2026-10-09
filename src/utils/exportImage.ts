@@ -12,7 +12,10 @@ function pad(value: number): string {
 }
 
 // Example: ooh-snap-2026-10-06.png (uses the local date, not UTC).
-export function createFilename(format: ExportFormat, date = new Date()): string {
+export function createFilename(
+  format: ExportFormat | 'gif',
+  date = new Date(),
+): string {
   const year = date.getFullYear()
   const month = pad(date.getMonth() + 1)
   const day = pad(date.getDate())
@@ -36,6 +39,17 @@ export function canvasToBlob(
   })
 }
 
+// Starts a download of something that already lives at an object URL.
+export function downloadUrl(url: string, filename: string): void {
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
 // Starts the download and returns the name of the file being saved.
 export async function downloadCanvas(
   canvas: HTMLCanvasElement,
@@ -49,13 +63,7 @@ export async function downloadCanvas(
 
   const filename = createFilename(format)
   const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
+  downloadUrl(url, filename)
 
   // Give the browser a moment to start the download before freeing the URL.
   setTimeout(() => URL.revokeObjectURL(url), 1000)

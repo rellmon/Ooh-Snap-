@@ -24,3 +24,24 @@ export function isBoolean(value: unknown): value is boolean {
 // In kiosk mode, a booth nobody touches resets itself.
 export const IDLE_TIMEOUT_MS = 90_000
 export const IDLE_WARNING_MS = 15_000
+
+// How long each photo shows in the GIF.
+export const gifSpeeds = [
+  { id: 'fast', name: 'Fast', delayMs: 400 },
+  { id: 'normal', name: 'Normal', delayMs: 900 },
+  { id: 'slow', name: 'Slow', delayMs: 1500 },
+] as const
+
+export type GifSpeedId = (typeof gifSpeeds)[number]['id']
+
+export const DEFAULT_GIF_SPEED: GifSpeedId = 'normal'
+
+export const GIF_SPEED_STORAGE_KEY = 'ooh-snap:gif-speed'
+
+export function isGifSpeedId(value: unknown): value is GifSpeedId {
+  return gifSpeeds.some((speed) => speed.id === value)
+}
+
+export function getGifSpeed(id: GifSpeedId) {
+  return gifSpeeds.find((speed) => speed.id === id) ?? gifSpeeds[1]
+}

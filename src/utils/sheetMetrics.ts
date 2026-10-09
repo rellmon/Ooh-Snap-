@@ -12,6 +12,9 @@ export const FOOTER_FONT_SIZE = 64
 // The color of an empty photo slot, in both the preview and the canvas.
 export const PLACEHOLDER_COLOR = '#e8e2d2'
 
+// The part of a layout that the measurements need. It lets us also measure a one-photo card.
+export type LayoutGrid = Pick<PhotoLayout, 'columns' | 'rows' | 'photoCount'>
+
 type SheetSize = {
   width: number
   height: number
@@ -25,7 +28,7 @@ type Rect = {
 }
 
 // The full size of the finished sheet for a layout.
-export function getSheetSize(layout: PhotoLayout): SheetSize {
+export function getSheetSize(layout: LayoutGrid): SheetSize {
   const gridWidth = layout.columns * CELL_WIDTH + (layout.columns - 1) * GAP
   const gridHeight = layout.rows * CELL_HEIGHT + (layout.rows - 1) * GAP
 
@@ -36,7 +39,7 @@ export function getSheetSize(layout: PhotoLayout): SheetSize {
 }
 
 // Where photo number `index` goes on the sheet.
-export function getCellRect(layout: PhotoLayout, index: number): Rect {
+export function getCellRect(layout: LayoutGrid, index: number): Rect {
   const column = index % layout.columns
   const row = Math.floor(index / layout.columns)
 
